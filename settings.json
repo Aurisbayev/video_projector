@@ -1,0 +1,12 @@
+{
+  "projectorResXY": [
+    1920,
+    1080
+  ],
+  "imageWidthCm": 134.0,
+  "projectorSpacingCm": 108.0,
+  "blendCurveGamma": 2.0,
+  "sourcePath": "test_images/grid.png",
+  "projectorSide": "LEFT",
+  "scaleMode": "crop"
+}
