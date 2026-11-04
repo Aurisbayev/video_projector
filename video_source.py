@@ -31,7 +31,12 @@ class VideoSource(object):
 
     def getFps(self):
         # ˅
-        """Return the frame rate of the video [frames per second]."""
+        """!
+        @brief Gives the frame rate of the video.
+
+     	@return Number of frames per second [frames per second].
+     	@rtype float
+        """
         return self.__fps
         # ˄
 
