@@ -23,6 +23,11 @@ class PipelineClass(object):
     # ˅
     # Keys that stop a video: Esc and q.
     QUIT_KEYS = (27, ord("q"))
+    """!
+    @var QUIT_KEYS
+    @brief (27, ord("q")): Esc and q. Public and static
+    """
+    
     # ˄
 
     def load(self):
@@ -69,6 +74,15 @@ class PipelineClass(object):
 
     def applyMask(self, sliceFrame):
         # ˅
+        """!
+        @brief Applies the blend mask to the cropped frame.
+        
+        Only columns that the mask fades are calculated now (columns with alpha 1 are coppied).
+        
+        @param sliceFrame The cropped portion of the frame to be masked [none]
+        @return The masked frame [none]
+        @rtype Image
+        """
         if self.__mask is None:
             raise ValueError("No mask: the mask must be built before applyMask()")
         # The mask is built once elsewhere and only read here.
@@ -116,6 +130,14 @@ class PipelineClass(object):
 
     def run(self):
         # ˅
+        """!
+        @brief Executes the pipeline processing.
+        
+        If isVideo() is true, it calls playVideo() and ends; otehrwise, the picture steps as before.
+        
+        @return None
+        @rtype None
+        """
         # The region and mask were built once in the constructor.
         if self.isVideo():
             self.playVideo()
@@ -128,11 +150,25 @@ class PipelineClass(object):
 
     def isVideo(self):
         # ˅
+        """!
+        @brief Checks if the source path has a video extension.
+        
+        @return True if sourcePath has a video extension, False otherwise [none].
+        @rtype bool
+        """
         return VideoSource.isVideoPath(self.__setup.getSourcePath())
         # ˄
 
     def setStartAt(self, startAt):
         # ˅
+        """!
+        @brief Sets the shared start time or clears it with None.
+        
+        @param startAt shared start time as seconds since 1970 [s], or None to start with a key press.
+        @return None
+        @rtype None
+        @throws ValueError if the value is not a finite number or None
+        """
         # startAt: shared start time as seconds since 1970 (time.time()), or None to start
         # with a key press. Set it on both computers to the same value.
         if startAt is not None and (isinstance(startAt, bool) or not isinstance(startAt, (int, float))
@@ -143,6 +179,16 @@ class PipelineClass(object):
 
     def playVideo(self, clock=None):
         # ˅
+        """!
+        @brief plays the video frame by frame synchronized with the shared start time or a key press.
+        
+        The frame comes from the clock, so frames are skipped if processing takes too long. At the end of the video, the frame number wraps around and the video loops. 
+
+        @param clock function giving the time in seconds [s], replaced in tests. 
+        @return None 
+        @rtype None
+        @throws ValueError If processing steps encounter invalid values.
+        """
         # clock: function giving the time in seconds, replaced in tests. Default: the system
         # wall clock with a shared start time, otherwise a steady clock started by the key press.
         path = self.__setup.getSourcePath()
@@ -186,6 +232,14 @@ class PipelineClass(object):
 
     def scaleSource(self):
         # ˅
+        """!
+        @brief Scales the source image or video frame to combined image size using crop or fit modes.
+        
+        Both modes keep the proportions without stretching. The result is always 2* resX - overlapPx wide and resY high.
+        
+        @return None
+        @rtype None
+        """
         if self.__sourceFrame is None:
             raise ValueError("No source frame: call load() first")
         src = self.__sourceFrame.getFrame()
@@ -234,6 +288,16 @@ class PipelineClass(object):
 
     def processFrame(self, array, masked=True):
         # ˅
+        """!
+        @brief Processes one video frame through scale, crop, and mask to produce this side's picture.
+        
+        Setting masked to False leaves the mask out, allowing comparison with and without blend.
+        
+        @param array One video frame (numpy array) [none].
+        @param masked masked=False leaves the mask out, to compare with and without the blend [none].
+        @return The processed frame as an Image object [none]
+        @rtype Image
+        """
         # One video frame (numpy array) through scale, crop and mask: gives this side's picture.
         # masked=False leaves the mask out, to compare with and without the blend.
         image = Image()
@@ -247,6 +311,15 @@ class PipelineClass(object):
     @staticmethod
     def __isQuitKey(key):
         # ˅
+        """!
+        @brief Checks if the provided key code corresponds to a quit action.
+        
+        True if the key code (low 8 bits) is in QUIT_KEYS; False for -1 (no key).
+        
+        @param key The key code to check [none]
+        @return True if it is a quit key, False otherwise
+        @rtype bool
+        """
         return key != -1 and (key & 0xFF) in PipelineClass.QUIT_KEYS
         # ˄
 
@@ -266,6 +339,12 @@ class PipelineClass(object):
 
         # ˅
         # Not in the diagram: the last source size the crop/fit notice was written for.
+        """!
+        @var __loggedCrop
+        @brief The last source size the crop or fit notice was written for.
+        
+        It remembers the source size for which the "cropped" or "black bars" message was written so it is only written once.
+        """
         self.__loggedCrop = None
         if setup is None or setup.getProjectorResXY() is None:
             raise ValueError("setup must be a loaded SetupClass: call load() and validate() first")
@@ -275,6 +354,12 @@ class PipelineClass(object):
         w = setup.getImageWidthCm()
         d = setup.getProjectorSpacingCm()
         side = setup.getProjectorSide()
+        """!
+        @var __region
+        @brief The strip of the combined image of this computer's side.
+        
+        It is built once in the constructor.
+        """
         self.__region = self.__math.cropRegion(side, resX, w, d)
         overlapPx = self.__math.overlapPx(resX, w, d)
         self.__mask = self.__math.blendMask(overlapPx, resX, side, setup.getBlendCurveGamma())
