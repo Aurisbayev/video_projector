@@ -13,20 +13,24 @@ class Display(object):
 
     def setScreen(self, index):
         # ˅
-        """Select the target monitor by index and remember that number.
-
-        index: index into screens (0 is the primary monitor)
-        Raises IndexError if screens is not configured or the index is out of range.
+        """!
+        @brief Select the target monitor by index and remember that number.
+        @param index index into screens (0 is the primary monitor) [none].
+        @return None
+        @rtype None
+        @throws IndexError If screens is not configured or the index is out of range.
         """
         self.__screen = self.__resolveIndex(index)
         # ˄
 
     def setFullscreen(self, enabled=True):
         # ˅
-        """Set the desired fullscreen state and apply it immediately if a window exists.
-
-        enabled: True for fullscreen, False for a normal window
-        Raises RuntimeError if called before the window is created.
+        """!
+        @brief Set the desired fullscreen state and apply it immediately if a window exists.
+        @param enabled True for fullscreen, False for a normal window [none].
+        @return None
+        @rtype None
+        @throws RuntimeError If called before the window is created.
         """
         if not self.__windowOpen:
             raise RuntimeError(
@@ -43,18 +47,23 @@ class Display(object):
 
     def isFullscreen(self):
         # ˅
-        """Return the desired fullscreen state."""
+        """!
+        @brief Return the desired fullscreen state.
+        @return True if fullscreen is enabled, False otherwise [none].
+        @rtype bool
+        """
         return self.__fullscreen
         # ˄
 
     @staticmethod
     def buildTestImage(width=1280, height=720):
         # ˅
-        """Build a test frame (BGR) with colour bars, a checker pattern and text.
-
-        width: frame width in pixels
-        height: frame height in pixels
-        Returns a numpy.ndarray of shape (height, width, 3) and dtype uint8.
+        """!
+        @brief Build a test frame (BGR) with colour bars, a checker pattern and text.
+        @param width frame width [px].
+        @param height frame height [px].
+        @return A numpy.ndarray of shape (height, width, 3) and dtype uint8 [none].
+        @rtype numpy.ndarray
         """
         upperHeight = height // 2
         lowerHeight = height - upperHeight
@@ -83,11 +92,15 @@ class Display(object):
 
     def show(self, frame):
         # ˅
-        """Show a frame in the window. The first call creates the window.
-
-        frame: image to display (numpy.ndarray)
-        If screens is configured, move and resize the window to the selected monitor.
-        Raises ValueError if frame is not a numpy.ndarray.
+        """!
+        @brief Show a frame in the window.
+        
+        The first call creates the window. If screens is configured, move and resize the window to the selected monitor.
+        
+        @param frame image to display (numpy.ndarray) [none].
+        @return None
+        @rtype None
+        @throws ValueError If frame is not a numpy.ndarray.
         """
         if not isinstance(frame, np.ndarray):
             raise ValueError(
@@ -115,16 +128,25 @@ class Display(object):
 
     def waitKey(self, delayMs=0):
         # ˅
-        """Wait delayMs milliseconds for a key press and return the key code (-1 if none).
-
-        delayMs: wait time [ms]. 0 waits indefinitely.
+        """!
+        @brief Wait delayMs milliseconds for a key press and return the key code (-1 if none).
+        @param delayMs wait time [ms]. 0 waits indefinitely.
+        @return The key code [none].
+        @rtype int
         """
         return cv2.waitKey(delayMs)
         # ˄
 
     def close(self):
         # ˅
-        """Destroy the window. Does nothing if there is no window or on calls after the first."""
+        """!
+        @brief Destroy the window.
+        
+        Does nothing if there is no window or on calls after the first.
+        
+        @return None
+        @rtype None
+        """
         if not self.__windowOpen:
             return
         cv2.destroyWindow(self.__windowName)
@@ -232,10 +254,11 @@ class Display(object):
 
 # ˅
 def screenRects(cocoaFrames):
-    """Convert macOS screen frames to (x, y, width, height) with the origin at the top left.
-
-    cocoaFrames: [(x, y, width, height), ...] in macOS coordinates (origin at the bottom
-    left of the primary screen). The first entry is the primary screen.
+    """!
+    @brief Convert macOS screen frames to (x, y, width, height) with the origin at the top left.
+    @param cocoaFrames [(x, y, width, height), ...] in macOS coordinates (origin at the bottom left of the primary screen) [none]. The first entry is the primary screen.
+    @return A list of converted screen frames [none].
+    @rtype list
     """
     primaryHeight = cocoaFrames[0][3]
     return [(int(x), int(primaryHeight - (y + height)), int(width), int(height))
@@ -243,11 +266,13 @@ def screenRects(cocoaFrames):
 
 
 def findProjectorScreens():
-    """Return (screens, index): the connected screens and the one to use for the projector.
-
-    The projector is the first screen that is not the primary one. With a single screen,
-    or if the screens cannot be read, the primary screen (index 0) is used and screens
-    may be None, which leaves the window placement to the system.
+    """!
+    @brief Return the connected screens and the one to use for the projector.
+    
+    The projector is the first screen that is not the primary one. With a single screen, or if the screens cannot be read, the primary screen (index 0) is used and screens may be None, which leaves the window placement to the system.
+    
+    @return A tuple of (screens, index) [none].
+    @rtype tuple
     """
     try:
         import AppKit
@@ -282,7 +307,13 @@ if __name__ == "__main__":
     screens = [(0, 0, 1920, 1080)]
 
     def buildTestImage(width=1280, height=720):
-        """Build a test frame (BGR) with text overlaid on colour bars and a checker pattern."""
+        """!
+        @brief Build a test frame (BGR) with text overlaid on colour bars and a checker pattern.
+        @param width frame width [px].
+        @param height frame height [px].
+        @return A numpy.ndarray of shape (height, width, 3) and dtype uint8 [none].
+        @rtype numpy.ndarray
+        """
         upperHeight = height // 2
         lowerHeight = height - upperHeight
 
