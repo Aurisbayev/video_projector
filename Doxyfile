@@ -187,7 +187,8 @@ FILE_PATTERNS          = *.c \
                          *.ice
 RECURSIVE              = YES
 EXCLUDE                = .venv \
-                         .herd
+                         .herd \
+                         tests
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        =
