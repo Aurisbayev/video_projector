@@ -12,17 +12,30 @@ import numpy as np
 
 class VideoSource(object):
     # ˅
+    """!
+    @brief Reads a video file one frame at a time.
+
+    PipelineClass uses this class to play a video. It is a helper class: it does no
+    projection calculations.
+    """
+    ## File extensions treated as video, compared in lower case.
     VIDEO_EXTENSIONS = (".mp4", ".m4v", ".mov", ".avi", ".mkv", ".webm")
+    ## Frame rate used if the file reports no frame rate, or an unusable one [frames per second].
     DEFAULT_FPS = 30.0
     # ˄
 
     @staticmethod
     def isVideoPath(path):
         # ˅
-        """Return True if the file extension of path is a supported video type.
+        """!
+        @brief Tells whether a path has a video file extension.
 
-        path: path to a picture or video file (string)
-        Only the extension is checked, the file is not opened.
+        Only the extension is checked (in VIDEO_EXTENSIONS). The file is not opened.
+
+        @param path Path of a picture or video file.
+        @return True if the extension is a video extension. False otherwise, also for
+                anything that is not text.
+        @rtype bool
         """
         if not isinstance(path, str):
             return False
@@ -31,31 +44,51 @@ class VideoSource(object):
 
     def getFps(self):
         # ˅
-        """Return the frame rate of the video [frames per second]."""
+        """!
+        @brief Gives the frame rate of the video.
+
+        @return Number of frames per second [frames per second].
+        @rtype float
+        """
         return self.__fps
         # ˄
 
     def getFrameCount(self):
         # ˅
-        """Return the number of frames in the video."""
+        """!
+        @brief Gives the number of frames in the video.
+
+        @return Number of frames.
+        @rtype int
+        """
         return self.__frameCount
         # ˄
 
     def getShape(self):
         # ˅
-        """Return (height, width, channels) of one video frame."""
+        """!
+        @brief Gives the size of one frame of the video.
+
+        @return (height, width, 3): height [px], width [px] and the 3 colour channels.
+        @rtype tuple
+        """
         return (self.__height, self.__width, 3)
         # ˄
 
     def frameAt(self, index):
         # ˅
-        """Return frame number index (counted from 0) as a BGR numpy.ndarray.
+        """!
+        @brief Gives one frame of the video.
 
-        index: frame number, 0 <= index < getFrameCount()
-        Asking for the next frame reads on, asking for a later one skips the frames in
-        between, and asking for an earlier one (for example when the video loops) seeks back.
-        The same frame is returned again if it is asked for twice in a row.
-        Raises ValueError if the index is out of range or the frame cannot be read.
+        The next frame is read on. A later frame is reached by skipping the frames in
+        between, and an earlier one (when the video loops) by seeking back. Asking for the
+        same frame twice in a row gives the stored picture without reading again.
+
+        @param index Frame number, counted from 0.
+        @return The frame as a NumPy array (BGR colours, 8 bits per colour).
+        @rtype numpy.ndarray
+        @throws ValueError If the video is closed, the index is out of range or not an
+                integer, or the frame cannot be skipped to or read.
         """
         if self.__capture is None:
             raise ValueError("The video is closed")
@@ -82,7 +115,13 @@ class VideoSource(object):
 
     def close(self):
         # ˅
-        """Release the video file. Does nothing on calls after the first."""
+        """!
+        @brief Releases the video file.
+
+        A second call does nothing.
+
+        @return None
+        """
         if self.__capture is not None:
             self.__capture.release()
             self.__capture = None
@@ -134,6 +173,16 @@ class VideoSource(object):
         # ˄
 
     # ˅
+    ## @fn __init__(self, path)
+    #  @brief Opens a video file and reads its frame rate, frame count and frame size.
+    #
+    #  If the file reports no usable frame rate, DEFAULT_FPS is used.
+    #
+    #  @param path Path of the video file.
+    #  @throws ValueError If path is empty or not text.
+    #  @throws FileNotFoundError If the file does not exist.
+    #  @throws ValueError If the file is corrupt or OpenCV does not support its codec.
+    #  @throws ValueError If the number of frames cannot be found.
 
     # ˄
 
