@@ -15,6 +15,21 @@ EXIT_INVALID = 2
 
 
 def main(argv=None):
+    """!
+    @brief Runs the dual-projector program from command-line arguments.
+
+    Only OSError and ValueError are turned into exit code 1. Any other error, such as
+    cv2.error from the window, ends the program with a traceback.
+
+    @param argv Command-line arguments. If None, argparse reads sys.argv.
+    @return Exit code. 0 for normal completion. 1 if the settings file cannot be read or has
+            missing or wrongly typed values, if the source picture or video cannot be read,
+            or if the pipeline fails. 2 if the settings are unusable (validate() fails, also
+            when the source file does not exist).
+    @rtype int
+    @throws SystemExit argparse raises this with code 2 for invalid command-line arguments,
+            also for a bad --start-at time, and with code 0 for --help.
+    """
     parser = argparse.ArgumentParser(
         description="Show this computer's half of the dual-projector picture.")
     parser.add_argument("settings", help="path to the settings JSON file")
