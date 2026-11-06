@@ -10,3 +10,7 @@ images/
 # python tools/make_test_video.py
 photos/
 test_images/demo.mp4
+
+# Doxygen output (OUTPUT_DIRECTORY in Doxyfile is ./website).
+website/html/
+website/latex/

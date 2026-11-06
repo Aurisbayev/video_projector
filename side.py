@@ -15,5 +15,10 @@ class Side(Enum):
 
 
 # ˅
+## @class side.Side
+#  @brief Identifies the side of the dual projector system
+#
+#  - LEFT: left projector, represented by the value 1
+#  - RIGHT: right projector, represented by the value 2
 
 # ˄
