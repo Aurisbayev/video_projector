@@ -148,6 +148,33 @@ Run `deactivate` to leave the virtual environment.
 
 ---
 
+## Quick test on the projectors
+
+One short command shows the test video on the real projectors. Both laptops need this
+repository and the environment installed (Option A or B above). With uv, put `uv run` in front.
+
+```bash
+python instant_run.py --left
+```
+
+It starts `main.py` with `settings.video.json` and a shared start time 5 seconds from now, so no
+key press is needed. It prints the exact command for the second laptop, with the opposite side
+and the same time. Both laptops need the same clock and time zone, set to automatic time. A
+laptop that starts late joins at the right frame.
+
+| Command | What it does |
+|---|---|
+| `python instant_run.py --left` or `--right` | Real show on this laptop's projector |
+| `python instant_run.py --left --start-in 30` | Start in 30 seconds, for time to reach the second laptop |
+| `python instant_run.py --left --start-at 14:30:05` | Start at a given time, in the same forms as `main.py` |
+| `python instant_run.py --left --image` | Show the picture from `settings.json`, which has no start time |
+| `python instant_run.py` | Preview on this computer, no projectors needed; add `--image` for the picture |
+| `python instant_run.py --gui` | Open the test GUI; add `--image` for the picture |
+
+If `test_images/demo.mp4` is missing, it is made first. `q` or `ESC` closes the window.
+
+---
+
 ## Project structure
 
 | File | Description |
@@ -159,6 +186,7 @@ Run `deactivate` to leave the virtual environment.
 | `mask.py` | Blend mask (alpha values) |
 | `side.py` | `Side` enum (`LEFT` / `RIGHT`) |
 | `image.py`, `display.py` | Image and display classes |
+| `instant_run.py` | One short command for a quick test: starts `main.py`, `tools/preview_both.py` or `gui.py` |
 | `gui.py` | Test window: settings, joined preview, start on the projector |
 | `video_source.py` | Reads video files frame by frame (`VideoSource`) |
 | `tools/check_settings.py` | Checks one settings file, or that two settings files match (the side may differ) |

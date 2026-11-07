@@ -82,6 +82,35 @@ Each frame is chosen from the clock, so the two computers' clocks must be set
 right, for example with NTP. Without a start time they start only as closely
 as the two key presses.
 
+## Quick test on the projectors
+
+`instant_run.py` shows the test video with one short command. Both laptops
+need the repository and the environment installed (see Install).
+
+On the first laptop, choose the side and a start time far enough ahead to
+reach the second laptop. Without `--start-in` the video starts in 5 seconds.
+
+```bash
+uv run python instant_run.py --left --start-in 30
+```
+
+It prints the start time and the exact command for the second laptop, for
+example:
+
+```bash
+uv run python instant_run.py --right --start-at '2026-11-07 14:30:35'
+```
+
+Run that command in the repository folder on the second laptop. Both videos
+start by themselves at that time, with no key press. A laptop that starts
+late joins at the right frame. Both laptops need the same clock and time
+zone, set to automatic time.
+
+Add `--image` to show the picture from `settings.json` instead. A picture
+has no start time. Without `--left` or `--right` the command shows a preview
+on this computer, and `--gui` opens the test window. If the test video is
+missing, it is made first.
+
 ## Test window
 
 `gui.py` tries settings on one computer without projectors. It previews both

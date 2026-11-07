@@ -108,6 +108,8 @@ everything with bars on the left and right.
 
 ## Tools
 
+-   **`instant_run.py`** is one short command that starts the test video
+    or picture on the projectors, or as a preview.
 -   **`gui.py`** is a test window to edit the settings, see both
     projectors joined, compare with and without the blend, play a video,
     and start the real show.
