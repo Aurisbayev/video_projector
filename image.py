@@ -20,17 +20,15 @@ class Image(object):
     def load(self, path):
         # ˅
         """!
-        @brief Reads the file at path as a colour picture and keeps it inside the object.
+        @brief Load the image at path in BGR (cv2.IMREAD_COLOR) and return it as a numpy.ndarray.
 
-        The picture is loaded in BGR (cv2.IMREAD_COLOR). It can be read later via getFrame()
-        and getShape().
+        The loaded frame is also kept internally and can be read via getFrame() / getShape().
 
-        @param path Location of the picture (string).
-        @return The frame (NumPy array).
+        @param path path to the image file [none].
+        @return The loaded image as a numpy array [none].
         @rtype numpy.ndarray
-        @throws FileNotFoundError If there is no such file.
-        @throws ValueError If the path is empty or not text, or the file cannot be read as a
-                picture.
+        @throws FileNotFoundError If the file does not exist or is not a file.
+        @throws ValueError If it cannot be read as an image, if path is not a non-empty string, if cv2 returns None, or if the result is not a numpy array.
         """
         if not isinstance(path, str) or not path.strip():
             raise ValueError(f"path must be a non-empty string, got {path!r}")
@@ -54,10 +52,11 @@ class Image(object):
     def getFrame(self):
         # ˅
         """!
-        @brief Gives the picture data.
+        @brief Return the loaded frame, or None if load() has not been called yet.
+        @return The loaded frame [none].
+        @rtype numpy.ndarray
 
-        @return The frame, or None if nothing is loaded or set yet.
-        @rtype numpy.ndarray or None
+        A frame from setFrame() is given back in the same way.
         """
         return self.__frame
         # ˄
@@ -65,12 +64,12 @@ class Image(object):
     def getShape(self):
         # ˅
         """!
-        @brief Gives the picture size.
-
-        @return (height, width, channels). A frame from setFrame() without colour channels
-                gives (height, width).
+        @brief Return (height, width, channels) of the loaded frame.
+        @return A tuple of (height, width, channels) [none].
         @rtype tuple
-        @throws ValueError If nothing is loaded.
+        @throws ValueError If load() has not been called yet (self.__frame is None).
+
+        A frame from setFrame() without colour channels gives (height, width).
         """
         if self.__frame is None:
             raise ValueError("No frame is loaded: call load() first")
@@ -91,13 +90,13 @@ class Image(object):
 
     def setFrame(self, frame):
         """!
-        @brief Puts new picture data into the object, instead of loading it from a file.
+        @brief Hold an already-built frame (numpy.ndarray) instead of loading one from a file.
+        @param frame The already-built frame to hold [none].
+        @return None
+        @rtype None
+        @throws ValueError If frame is not a numpy.ndarray.
 
         Used for video frames and for the results of scaling, cropping and masking.
-
-        @param frame The new picture data (NumPy array).
-        @return None
-        @throws ValueError If frame is not a NumPy array.
         """
         if not isinstance(frame, np.ndarray):
             raise ValueError(f"frame must be a numpy.ndarray, got {type(frame).__name__}")

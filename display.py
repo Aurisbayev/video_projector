@@ -23,15 +23,14 @@ class Display(object):
     def setScreen(self, index):
         # ˅
         """!
-        @brief Selects the target monitor by index and remembers that number.
+        @brief Select the target monitor by index and remember that number.
+        @param index index into screens (0 is the primary monitor) [none].
+        @return None
+        @rtype None
+        @throws IndexError If screens is not configured or the index is out of range.
+        @throws ValueError If index is not an integer.
 
         An open window moves to the new monitor on the next show().
-
-        @param index Position in screens, counted from 0. In the list from
-                findProjectorScreens(), 0 is the primary monitor.
-        @return None
-        @throws ValueError If index is not an integer.
-        @throws IndexError If screens is not configured or the index is out of range.
         """
         self.__screen = self.__resolveIndex(index)
         # ˄
@@ -39,12 +38,12 @@ class Display(object):
     def setFullscreen(self, enabled=True):
         # ˅
         """!
-        @brief Sets the fullscreen state and applies it to the open window immediately.
-
-        @param enabled True for fullscreen, False for a normal window.
+        @brief Set the desired fullscreen state and apply it immediately if a window exists.
+        @param enabled True for fullscreen, False for a normal window [none].
         @return None
-        @throws RuntimeError If no window is open: show() was not called yet, or the window
-                was closed.
+        @rtype None
+        @throws RuntimeError If called before the window is created.
+        @throws RuntimeError If the window was closed.
         """
         if not self.__windowOpen:
             raise RuntimeError(
@@ -62,9 +61,8 @@ class Display(object):
     def isFullscreen(self):
         # ˅
         """!
-        @brief Gives the desired fullscreen state.
-
-        @return True for fullscreen, False for a normal window.
+        @brief Return the desired fullscreen state.
+        @return True if fullscreen is enabled, False otherwise [none].
         @rtype bool
         """
         return self.__fullscreen
@@ -74,11 +72,10 @@ class Display(object):
     def buildTestImage(width=1280, height=720):
         # ˅
         """!
-        @brief Builds a test frame (BGR) with colour bars, a checker pattern and text.
-
-        @param width Frame width [px].
-        @param height Frame height [px].
-        @return NumPy array of shape (height, width, 3) and dtype uint8.
+        @brief Build a test frame (BGR) with colour bars, a checker pattern and text.
+        @param width frame width [px].
+        @param height frame height [px].
+        @return A numpy.ndarray of shape (height, width, 3) and dtype uint8 [none].
         @rtype numpy.ndarray
         """
         upperHeight = height // 2
@@ -109,15 +106,17 @@ class Display(object):
     def show(self, frame):
         # ˅
         """!
-        @brief Shows a frame in the window.
+        @brief Show a frame in the window.
 
-        The first call creates the window. If screens is configured, the window is moved and
-        resized to the selected monitor. The window is placed on the first call and again
-        only if the screen is changed, so show() can be called for every frame of a video.
+        The first call creates the window. If screens is configured, move and resize the window to the selected monitor.
 
-        @param frame The picture to show, as a NumPy array.
+        @param frame image to display (numpy.ndarray) [none].
         @return None
-        @throws ValueError If frame is not a NumPy array.
+        @rtype None
+        @throws ValueError If frame is not a numpy.ndarray.
+
+        The window is placed on the first call and again only if the screen is
+        changed, so show() can be called for every frame of a video.
         """
         if not isinstance(frame, np.ndarray):
             raise ValueError(
@@ -146,10 +145,9 @@ class Display(object):
     def waitKey(self, delayMs=0):
         # ˅
         """!
-        @brief Waits delayMs milliseconds for a key press and gives the key code.
-
-        @param delayMs Wait time [ms]. 0 waits without limit.
-        @return Key code, or -1 if none.
+        @brief Wait delayMs milliseconds for a key press and return the key code (-1 if none).
+        @param delayMs wait time [ms]. 0 waits indefinitely.
+        @return The key code [none].
         @rtype int
         """
         return cv2.waitKey(delayMs)
@@ -158,11 +156,12 @@ class Display(object):
     def close(self):
         # ˅
         """!
-        @brief Destroys the window.
+        @brief Destroy the window.
 
         Does nothing if there is no window or on calls after the first.
 
         @return None
+        @rtype None
         """
         if not self.__windowOpen:
             return
@@ -286,11 +285,9 @@ class Display(object):
 # ˅
 def screenRects(cocoaFrames):
     """!
-    @brief Converts macOS screen frames to (x, y, width, height) with the origin at the top left.
-
-    @param cocoaFrames [(x, y, width, height), ...] in macOS coordinates (origin at the
-            bottom left of the primary screen). The first entry is the primary screen.
-    @return List of (x, y, width, height).
+    @brief Convert macOS screen frames to (x, y, width, height) with the origin at the top left.
+    @param cocoaFrames [(x, y, width, height), ...] in macOS coordinates (origin at the bottom left of the primary screen) [none]. The first entry is the primary screen.
+    @return A list of converted screen frames [none].
     @rtype list
     """
     primaryHeight = cocoaFrames[0][3]
@@ -300,18 +297,14 @@ def screenRects(cocoaFrames):
 
 def findProjectorScreens():
     """!
-    @brief Finds the connected screens and the one to use for the projector.
+    @brief Return the connected screens and the one to use for the projector.
 
-    The projector is the first screen that is not the primary one. With a single screen,
-    the primary screen (index 0) is used.
+    The projector is the first screen that is not the primary one. With a single screen, or if the screens cannot be read, the primary screen (index 0) is used and screens may be None, which leaves the window placement to the system.
 
-    This works only on macOS, where the screens are read through AppKit. If the screens
-    cannot be read, for example on other systems, the result is (None, 0), which leaves
-    the window placement to the system.
-
-    @return (screens, index): the list of (x, y, width, height), or None, and the position
-            in it of the screen to use.
+    @return A tuple of (screens, index) [none].
     @rtype tuple
+
+    This works only on macOS, where the screens are read through AppKit.
     """
     try:
         import AppKit
@@ -346,7 +339,13 @@ if __name__ == "__main__":
     screens = [(0, 0, 1920, 1080)]
 
     def buildTestImage(width=1280, height=720):
-        """Build a test frame (BGR) with text overlaid on colour bars and a checker pattern."""
+        """!
+        @brief Build a test frame (BGR) with text overlaid on colour bars and a checker pattern.
+        @param width frame width [px].
+        @param height frame height [px].
+        @return A numpy.ndarray of shape (height, width, 3) and dtype uint8 [none].
+        @rtype numpy.ndarray
+        """
         upperHeight = height // 2
         lowerHeight = height - upperHeight
 

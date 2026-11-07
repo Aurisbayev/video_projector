@@ -192,13 +192,23 @@ START_TIME_FORMATS = ("%H:%M", "%H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d %H:%M:%S"
 
 
 def parseStartTime(text, now=None):
-    """Turn a start time typed by a person into seconds since 1970 (like time.time()).
+    """!
+    @brief Turns a start time typed by a person into seconds since 1970, the same kind of number time.time() gives.
 
-    text: "HH:MM", "HH:MM:SS" (today, local time) or "YYYY-MM-DD HH:MM[:SS]"
-    now: the current time as a datetime, only given by tests
-    A time that has already passed is fine: the video then joins at the frame that belongs
-    to that moment. Raises ValueError if the text is not one of these forms.
+    Accepted forms are HH:MM, HH:MM:SS (today, local time) and YYYY-MM-DD HH:MM, YYYY-MM-DD HH:MM:SS (that day, local time). Spaces around the text are ignored, and a time that has already passed is accepted.
+
+    @param text The start time string to parse [none].
+    @param now The current time as a datetime, only given by tests [none].
+    @return The parsed time in seconds since 1970 [s].
+    @rtype float
+    @throws ValueError If the input is not text, or if the text does not match the accepted forms (including impossible times like 25:00).
     """
+    # Turn a start time typed by a person into seconds since 1970 (like time.time()).
+    #
+    # text: "HH:MM", "HH:MM:SS" (today, local time) or "YYYY-MM-DD HH:MM[:SS]"
+    # now: the current time as a datetime, only given by tests
+    # A time that has already passed is fine: the video then joins at the frame that belongs
+    # to that moment. Raises ValueError if the text is not one of these forms.
     if not isinstance(text, str):
         raise ValueError("Start time must be text like 14:30:05, got %r" % (text,))
     text = text.strip()

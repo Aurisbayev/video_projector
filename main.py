@@ -1,3 +1,22 @@
+"""!
+@brief Main execution script for the projector application.
+
+Command-line options:
+python main.py settings.json [--side LEFT|RIGHT] [--scale-mode crop|fit] [--start-at TIME]
+
+Options:
+- settings: Path of the settings file.
+- --side: Overrides projectorSide. Not case sensitive.
+- --scale-mode: Overrides scaleMode. Not case sensitive.
+- --start-at TIME: Shared start time for a video, forms as in 3.2, local time. Same time on both computers. Both computers must have the right clock and the same time zone. For a picture the option is ignored and a warning is logged: "--start-at is ignored: the source is a picture, not a video". A time in the wrong form is a usage error.
+
+Exit codes:
+- 0: Normal end (the window was closed with q or Esc, or the picture window was closed with a key)
+- 1: The settings file, the picture or the video could not be read or opened (message names the problem)
+- 2: validate() returned False; or a wrong command-line option, including a wrong --start-at or --scale-mode
+"""
+
+
 import argparse
 import logging
 import sys
@@ -16,19 +35,20 @@ EXIT_INVALID = 2
 
 def main(argv=None):
     """!
-    @brief Runs the dual-projector program from command-line arguments.
+    @brief Executes the main program flow including parsing options, loading settings, and running the pipeline.
 
-    Only OSError and ValueError are turned into exit code 1. Any other error, such as
-    cv2.error from the window, ends the program with a traceback.
+    Order inside main(): read the options (a wrong --start-at stops here), load the settings, apply --side and --scale-mode, validate(), create the pipeline, set the start time (video only), run().
 
-    @param argv Command-line arguments. If None, argparse reads sys.argv.
-    @return Exit code. 0 for normal completion. 1 if the settings file cannot be read or has
-            missing or wrongly typed values, if the source picture or video cannot be read,
-            or if the pipeline fails. 2 if the settings are unusable (validate() fails, also
-            when the source file does not exist).
+    @param argv Command-line arguments list [none].
+    @return Exit code indicating success (0), read/open error (1), or validation/option error (2) [none].
     @rtype int
     @throws SystemExit argparse raises this with code 2 for invalid command-line arguments,
             also for a bad --start-at time, and with code 0 for --help.
+
+    Only OSError and ValueError are turned into exit code 1. Any other error, such as
+    cv2.error from the window, ends the program with a traceback. If the source file does
+    not exist, validate() fails, so the exit code is 2. If argv is None, argparse reads
+    sys.argv.
     """
     parser = argparse.ArgumentParser(
         description="Show this computer's half of the dual-projector picture.")
