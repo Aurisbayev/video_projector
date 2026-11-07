@@ -7,9 +7,9 @@ iniconfig==2.3.1
 numpy==2.5.4
     # via
     #   opencv-python
-    #   projector-pbl4
+    #   video-projector
 opencv-python==5.0.0.93
-    # via projector-pbl4
+    # via video-projector
 packaging==26.3
     # via pytest
 pluggy==1.7.0
