@@ -168,7 +168,7 @@ class PipelineClass(object):
         """!
         @brief Executes the pipeline processing.
 
-        If isVideo() is true, it calls playVideo() and ends; otherwise, the picture steps as before.
+        If isVideo() is true, it calls playVideo() and ends; otherwise it runs the picture steps.
 
         @return None
         @rtype None
@@ -290,15 +290,15 @@ class PipelineClass(object):
 
         Both modes keep the proportions without stretching. The result is always 2 * resX - overlapPx wide and resY high.
 
-        @return None
-        @rtype None
+        @return The scaled Image, which also replaces the source frame.
+        @rtype Image
         @throws ValueError If there is no source frame, or the overlap in pixels is out of
                 range.
 
         The target is both projectors side by side, minus the shared overlap. "crop" cuts
         the extra edges and keeps the centre. "fit" shows the whole picture in the centre
         with black bars. It writes an INFO message when the aspect ratios differ, once per
-        source size and mode. The scaled Image replaces the source frame.
+        source size and mode.
         """
         if self.__sourceFrame is None:
             raise ValueError("No source frame: call load() first")
@@ -351,10 +351,8 @@ class PipelineClass(object):
         """!
         @brief Processes one video frame through scale, crop, and mask to produce this side's picture.
 
-        Setting masked to False leaves the mask out, allowing comparison with and without blend.
-
         @param array One video frame (numpy array) [none].
-        @param masked masked=False leaves the mask out, to compare with and without the blend [none].
+        @param masked True applies the mask, False leaves it out, to compare with and without the blend [none].
         @return The processed frame as an Image object [none]
         @rtype Image
         @throws ValueError If array is not a NumPy array, or scaling, cropping or masking
@@ -362,8 +360,6 @@ class PipelineClass(object):
 
         The frame replaces the source frame.
         """
-        # One video frame (numpy array) through scale, crop and mask: gives this side's picture.
-        # masked=False leaves the mask out, to compare with and without the blend.
         image = Image()
         image.setFrame(array)
         self.__sourceFrame = image
