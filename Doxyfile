@@ -234,7 +234,7 @@ HTML_HEADER            =
 HTML_FOOTER            =
 HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  = ./website/doxygen-awesome-css/doxygen-awesome-projector.css
-HTML_EXTRA_FILES       = website/website-images/MainDiagramFinalizedIsh.webp \
+HTML_EXTRA_FILES       = diagram/MainDiagram.png \
                          website/website-images/projector_geometry.webp
 HTML_COLORSTYLE        = AUTO_LIGHT
 HTML_COLORSTYLE_HUE    = 220

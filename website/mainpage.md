@@ -48,11 +48,11 @@ Key terms:
 ## UML class diagram
 
 The diagram below shows the main classes, their relationships, and the
-methods documented in this project. It was drawn before video support
-was added, so it does not show `VideoSource`, the scale mode or the
-video methods of `PipelineClass`.
+methods documented in this project. The module functions
+(`parseStartTime`, `findProjectorScreens`, `screenRects`), `main.py`,
+the test window and the tools are not on the diagram.
 
-<img src="MainDiagramFinalizedIsh.webp" width="500" alt="UML Class Diagram">
+<a href="MainDiagram.png"><img src="MainDiagram.png" width="100%" alt="UML Class Diagram"></a>
 
 ## Projector geometry and blending
 
