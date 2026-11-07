@@ -85,12 +85,19 @@ as the two key presses.
 ## Test window
 
 `gui.py` tries settings on one computer without projectors. It previews both
-sides joined, plays videos, and can start `main.py` on a projector. It needs
-`tkinter`.
+sides joined, plays videos, and can start `main.py` on a projector.
 
 ```bash
 uv run python gui.py settings.json
 ```
+
+It needs `tkinter`. Check it with `python -c "import tkinter"`. If that fails,
+run `brew install python-tk@3.14` for Homebrew Python, or
+`sudo apt install python3-tk` on Debian or Ubuntu.
+
+The Python that uv downloads itself (`--managed-python`) includes `tkinter`,
+but in a virtual environment the window can still fail with
+`Can't find a usable init.tcl`. The README explains how to fix this.
 
 ## Check the displays first
 

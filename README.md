@@ -227,7 +227,17 @@ A window for trying things on one computer, without projectors:
   projector screen. **Stop** closes it.
 
 Wrong settings are shown as a message at the bottom, and the preview keeps the last good picture.
-The GUI needs `tkinter`, which comes with most Python installs.
+
+The GUI needs `tkinter`. Check it with `python -c "import tkinter"`. If that fails:
+
+- Homebrew Python: `brew install python-tk@3.14`.
+- Debian / Ubuntu: `sudo apt install python3-tk`.
+
+The Python that uv downloads itself (`--managed-python`) includes `tkinter`, but in a virtual
+environment the window can still fail with `Can't find a usable init.tcl`, although the import
+works. This happened with uv 0.9.17 and Python 3.14.2 on macOS. Set `TCL_LIBRARY` and
+`TK_LIBRARY` to the `lib/tcl8.6` and `lib/tk8.6` folders of that Python, which is in the folder
+that `uv python dir` prints.
 
 ## Smoke test: full-screen on a chosen screen
 
