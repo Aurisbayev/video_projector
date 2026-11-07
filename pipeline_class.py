@@ -29,8 +29,6 @@ class PipelineClass(object):
     """
     ## Keys that stop a video: Esc and q.
     QUIT_KEYS = (27, ord("q"))
-    ## @var QUIT_KEYS
-    #  @brief (27, ord("q")): Esc and q. Public and static
 
     # ˄
 
@@ -99,12 +97,13 @@ class PipelineClass(object):
         """!
         @brief Applies the blend mask to the cropped frame.
 
-        Only columns that the mask fades are calculated now (columns with alpha 1 are copied).
+        Only the columns the mask fades are calculated; columns with alpha 1 are copied.
 
         @param sliceFrame The cropped portion of the frame to be masked [none]
         @return The masked frame [none]
         @rtype Image
-        @throws ValueError If there is no mask, or the slice width is not resX.
+        @throws ValueError If there is no mask, or the slice width does not match the mask
+                length.
 
         The input is not changed.
         """
@@ -206,14 +205,14 @@ class PipelineClass(object):
         """!
         @brief Sets the shared start time or clears it with None.
 
-        @param startAt shared start time as seconds since 1970 [s], or None to start with a key press.
+        Both computers must be given the same value.
+
+        @param startAt shared start time as seconds since 1970 (like time.time()) [s], or None to start with a key press.
         @return None
         @rtype None
-        @throws ValueError if the value is not a finite number or None
-        @throws ValueError If the value is True or False.
+        @throws ValueError If the value is not a finite number or None, including True, False
+                and text such as "14:30" (convert text with parseStartTime() first).
         """
-        # startAt: shared start time as seconds since 1970 (time.time()), or None to start
-        # with a key press. Set it on both computers to the same value.
         if startAt is not None and (isinstance(startAt, bool) or not isinstance(startAt, (int, float))
                                     or not math.isfinite(startAt)):
             raise ValueError("startAt must be a number of seconds or None, got %r" % (startAt,))
@@ -223,11 +222,17 @@ class PipelineClass(object):
     def playVideo(self, clock=None):
         # ˅
         """!
-        @brief plays the video frame by frame synchronized with the shared start time or a key press.
+        @brief Plays the video frame by frame synchronized with the shared start time or a key press.
 
         The frame comes from the clock, so frames are skipped if processing takes too long. At the end of the video, the frame number wraps around and the video loops.
 
-        @param clock function giving the time in seconds [s], replaced in tests.
+        With a shared start time, a computer started after that time joins at the frame that
+        belongs to that moment, so two computers with the same clock show the same frame.
+        The last processed frame is kept in output.
+
+        @param clock Function giving the time in seconds [s]. The default is the wall clock
+               (time.time) when a shared start time is set, otherwise a steady clock
+               (time.monotonic). Tests give their own.
         @return None
         @rtype None
         @throws ValueError If processing steps encounter invalid values.
@@ -239,8 +244,6 @@ class PipelineClass(object):
         playing, and Esc or q stops the video. The window and the video file are closed
         when playing stops, also after an error.
         """
-        # clock: function giving the time in seconds, replaced in tests. Default: the system
-        # wall clock with a shared start time, otherwise a steady clock started by the key press.
         path = self.__setup.getSourcePath()
         source = VideoSource(path)
         fps = source.getFps()
@@ -285,7 +288,7 @@ class PipelineClass(object):
         """!
         @brief Scales the source image or video frame to combined image size using crop or fit modes.
 
-        Both modes keep the proportions without stretching. The result is always 2* resX - overlapPx wide and resY high.
+        Both modes keep the proportions without stretching. The result is always 2 * resX - overlapPx wide and resY high.
 
         @return None
         @rtype None

@@ -8,7 +8,7 @@ Options:
 - settings: Path of the settings file.
 - --side: Overrides projectorSide. Not case sensitive.
 - --scale-mode: Overrides scaleMode. Not case sensitive.
-- --start-at TIME: Shared start time for a video, forms as in 3.2, local time. Same time on both computers. Both computers must have the right clock and the same time zone. For a picture the option is ignored and a warning is logged: "--start-at is ignored: the source is a picture, not a video". A time in the wrong form is a usage error.
+- --start-at TIME: Shared start time for a video, as HH:MM, HH:MM:SS, YYYY-MM-DD HH:MM or YYYY-MM-DD HH:MM:SS, local time. Same time on both computers. Both computers must have the right clock and the same time zone. For a picture the option is ignored and a warning is logged: "--start-at is ignored: the source is a picture, not a video". A time in the wrong form is a usage error.
 
 Exit codes:
 - 0: Normal end (the window was closed with q or Esc, or the picture window was closed with a key)
@@ -28,8 +28,11 @@ from video_source import parseStartTime
 
 _log = logging.getLogger(__name__)
 
+## Exit code 0: normal end.
 EXIT_OK = 0
+## Exit code 1: the settings file, the picture or the video could not be read or opened.
 EXIT_ERROR = 1
+## Exit code 2: validate() returned False. A wrong command-line option gives the same code through argparse.
 EXIT_INVALID = 2
 
 

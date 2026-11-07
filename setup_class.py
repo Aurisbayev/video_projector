@@ -244,6 +244,9 @@ class SetupClass(object):
         # ˄
 
     # ˅
+    ## @fn __init__(self)
+    #  @brief Creates an empty setup: scaleMode is crop and every other setting is None
+    #         until load().
 
     @staticmethod
     def __isPositiveNumber(value):
