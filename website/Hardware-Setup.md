@@ -18,11 +18,10 @@ Terms used below:
 
 | Equipment | Specification | Quantity |
 |-----------|---------------|----------|
-| Projector | TODO: model, native resolution | 2 |
-| Screen | TODO: width and height in cm | 1 |
-| Computer | TODO: OS | 2 |
-| Video cable | TODO: HDMI, DisplayPort or other | 2 |
-| Stand or mount | TODO | 2 |
+| Projector | Epson, native resolution 1920 x 1080 | 2 |
+| Screen | Any flat screen or wall. The size depends on the room and is not a fixed value: measure `w` and `d` for your setup | 1 |
+| Computer | macOS (used in our test) | 2 |
+| Video cable | HDMI | 2 |
 | Measuring tape | | 1 |
 
 ## Layout
