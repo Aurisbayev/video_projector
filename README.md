@@ -161,6 +161,7 @@ Run `deactivate` to leave the virtual environment.
 | `image.py`, `display.py` | Image and display classes |
 | `gui.py` | Test window: settings, joined preview, start on the projector |
 | `video_source.py` | Reads video files frame by frame (`VideoSource`) |
+| `tools/check_settings.py` | Checks one settings file, or that two settings files match (the side may differ) |
 
 > [!NOTE]
 > The modules are generated from a UML model. Keep the `# ˅` / `# ˄` markers and write your code between them so it is kept when the code is regenerated.

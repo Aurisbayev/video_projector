@@ -6,30 +6,33 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from setup_class import SetupClass
-from side import Side
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(
-        description="Check that LEFT and RIGHT projector settings match."
+        description="Check one settings file, or check that two settings files match."
     )
-    parser.add_argument("left_file")
-    parser.add_argument("right_file")
-    args = parser.parse_args()
+    parser.add_argument("settings_file")
+    parser.add_argument("other_file", nargs="?")
+    args = parser.parse_args(argv)
 
     try:
-        left = SetupClass()
-        right = SetupClass()
+        first = SetupClass()
+        first.load(args.settings_file)
 
-        left.load(args.left_file)
-        right.load(args.right_file)
-
-        if not left.validate():
-            print("ERROR: LEFT settings are invalid.")
+        if not first.validate():
+            print(f"ERROR: {args.settings_file} is invalid.")
             return 1
 
-        if not right.validate():
-            print("ERROR: RIGHT settings are invalid.")
+        if args.other_file is None:
+            print(f"OK: {args.settings_file} is valid.")
+            return 0
+
+        second = SetupClass()
+        second.load(args.other_file)
+
+        if not second.validate():
+            print(f"ERROR: {args.other_file} is invalid.")
             return 1
 
         fields = {
@@ -38,30 +41,19 @@ def main():
             "projectorSpacingCm": "getProjectorSpacingCm",
             "blendCurveGamma": "getBlendCurveGamma",
             "sourcePath": "getSourcePath",
+            "scaleMode": "getScaleMode",
         }
 
         problems = []
 
         for field, getter in fields.items():
-            left_value = getattr(left, getter)()
-            right_value = getattr(right, getter)()
+            first_value = getattr(first, getter)()
+            second_value = getattr(second, getter)()
 
-            if left_value != right_value:
+            if first_value != second_value:
                 problems.append(
-                    f"{field}: LEFT={left_value!r}, RIGHT={right_value!r}"
+                    f"{field}: first={first_value!r}, second={second_value!r}"
                 )
-
-        if left.getProjectorSide() != Side.LEFT:
-            problems.append(
-                f"projectorSide: LEFT file has "
-                f"{left.getProjectorSide().name}, expected LEFT"
-            )
-
-        if right.getProjectorSide() != Side.RIGHT:
-            problems.append(
-                f"projectorSide: RIGHT file has "
-                f"{right.getProjectorSide().name}, expected RIGHT"
-            )
 
         if problems:
             print("ERROR: Settings do not match:")
@@ -70,7 +62,10 @@ def main():
             return 1
 
         print("OK: Both settings files are valid and match.")
-        print("Only projectorSide differs: LEFT / RIGHT.")
+        print(
+            f"projectorSide: {first.getProjectorSide().name} / "
+            f"{second.getProjectorSide().name} (not compared: --side chooses the side)."
+        )
         return 0
 
     except (OSError, ValueError) as error:
