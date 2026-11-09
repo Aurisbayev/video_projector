@@ -60,7 +60,7 @@ This digital illustration summarizes the two-projector arrangement, the
 overlap on the screen, the opposing brightness fades, and how the
 combined image is divided into left, overlap, and right regions.
 
-<img src="projector_geometry.webp" width="500" alt="Projector Geometry">
+<img src="./website/website-images/combined-image-example.svg" width="500" alt="Projector Geometry">
 
 ## Main classes
 

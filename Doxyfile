@@ -7,8 +7,8 @@ DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "Dual-Projector Projection System"
 PROJECT_NUMBER         = 
 PROJECT_BRIEF          =
-PROJECT_LOGO           = ./website/projector_project_log_simple.png
-PROJECT_ICON           = ./website/projector_project_log_simple.png
+PROJECT_LOGO           = ./website/website-images/logo.svg
+PROJECT_ICON           = ./website/website-images/icon.svg
 OUTPUT_DIRECTORY       = ./website
 CREATE_SUBDIRS         = NO
 CREATE_SUBDIRS_LEVEL   = 8
@@ -188,8 +188,8 @@ FILE_PATTERNS          = *.c \
 RECURSIVE              = YES
 EXCLUDE                = .venv \
                          .herd \
-                         tests
-EXCLUDE_SYMLINKS       = NO
+                         tests 
+EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        =
 EXAMPLE_PATH           =
@@ -230,8 +230,8 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            =
-HTML_FOOTER            =
+HTML_HEADER            = ./website/header.html
+HTML_FOOTER            = ./website/footer.html
 HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  = ./website/doxygen-awesome-css/doxygen-awesome-projector.css
 HTML_EXTRA_FILES       = diagram/MainDiagram.png \
@@ -298,7 +298,7 @@ EXTRA_SEARCH_MAPPINGS  =
 #---------------------------------------------------------------------------
 # Configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 LATEX_OUTPUT           = latex
 LATEX_CMD_NAME         =
 MAKEINDEX_CMD_NAME     = makeindex
