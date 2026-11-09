@@ -7,17 +7,41 @@ import numpy as np
 
 
 class Display(object):
+    """!
+    @brief Manages window used to display the processed image or video on the selected monitor. 
+
+    @details Optionally full-screen on a chosen monitor.
+    """
+
     # ˅
     
     # ˄
 
     def setScreen(self, index):
+        """!
+        @brief Chooses the monitor to use. 
+        @details The method does not move the window immediately. The new monitor is used when show() is called.
+
+        @param index the monitor number to use.
+
+        @throws IndexError if screens is not set or the index is out of range.
+        """
+
         # ˅
         
         self.__screen = self.__resolveIndex(index)
         # ˄
 
     def setFullscreen(self, enabled=True):
+        """!
+        @brief Sets the desired fullscreen state.
+        @details Applies it immediately if a window exists.
+
+        @param bool enabled (True for fullscreen, False for a normal window).
+
+        @throws IndexError if screens is not set or the index is out of range.
+        """
+
         # ˅
         
         if not self.__windowOpen:
@@ -34,6 +58,12 @@ class Display(object):
         # ˄
 
     def isFullscreen(self):
+        """!
+        @brief Tests whether the full-screen is wanted.
+
+        @returns bool True or False
+        """
+
         # ˅
         
         return self.__fullscreen
@@ -41,6 +71,16 @@ class Display(object):
 
     @staticmethod
     def buildTestImage(width=1280, height=720):
+        """!
+        @brief Builds a test image (frame) for checking a projector
+        @details test image has (BGR) color bars, a checker pattern and text.
+
+        @param width of the frame in pixels
+        @param height of the frame in pixels
+
+        @returns frame Numpy array
+        """
+
         # ˅
         
         upperHeight = height // 2
@@ -69,6 +109,16 @@ class Display(object):
         # ˄
 
     def show(self, frame):
+        """!
+        @brief Displays the image in the window. 
+
+        @details The first call creates the window and moves it to the chosen monitor.
+
+        @param frame a NumpyArray containing the image to display.
+
+        @throws ValueError if frame is not a NumPy array.
+        """
+
         # ˅
         
         if not isinstance(frame, np.ndarray):
@@ -96,12 +146,24 @@ class Display(object):
         # ˄
 
     def waitKey(self, delayMs=0):
+        """!
+        @brief Waits for a key press
+
+        @param delayMS wait time in ms. 0 waits without limit.
+
+        @returns key code or -1 if none
+        """
+
         # ˅
         
         return cv2.waitKey(delayMs)
         # ˄
 
     def close(self):
+        """!
+        @brief Closes the window. 
+        """
+
         # ˅
         
         if not self.__windowOpen:
@@ -111,6 +173,21 @@ class Display(object):
         # ˄
 
     def __init__(self, windowName="projector", screens=None, screen=0):
+        """!
+        @brief Opens a window to show an image, 
+
+        @details Optionally full-screen on a chosen monitor.
+
+        @param windowName Name of the window/ Default is "projector"
+
+        @param screens Optional list of monitors, each (x, y, width, height) in pixels. If set to None, the system places the window
+
+        @param screen index of the selected monitor. 0 is the primary monitor
+
+        @throws ValueError if windowName is empty, if screens is not a list of 4-number tuples with positive width and height, or if screen is not an integer. 
+        @throws IndexError if screen does not exist in screens.
+        """
+
 
         self.__windowOpen = None
 
@@ -225,14 +302,32 @@ class Display(object):
 
 # ˅
 def screenRects(cocoaFrames):
+    """!
+    @brief Converts macOS monitor coordinates into coordinates whose origin is at the top-left.
     
+    @details The native macOS Cocoa system has the origin at the bottom left. This function transforms it into the more common coordinate system where the origin is at the top left.
+    
+    @param screens a list (x, y, width, height). The first is the primary monitor.
+    @returns screens a list of (x, y, width, height). 
+    """
+
     primaryHeight = cocoaFrames[0][3]
     return [(int(x), int(primaryHeight - (y + height)), int(width), int(height))
             for x, y, width, height in cocoaFrames]
 
 
 def findProjectorScreens():
-    
+    """!
+    @brief Detects connected monitors and selects the primary projector.
+
+    @details The projector is the first non-primary monitor. 
+    With one monitor, or if the monitors cannot be read, it uses the primary one.
+    @raisewarning Works only on macOS. On other systems, returns (None, 0)
+
+    @returns (screens, index) screens may be none.
+
+    """
+
     try:
         import AppKit
         frames = [(f.origin.x, f.origin.y, f.size.width, f.size.height)
