@@ -37,6 +37,16 @@ EXIT_INVALID = 2
 
 
 def main(argv=None):
+    """!
+    @brief Runs the dual-projector program from command-line arguments
+
+    @param argy Command-line arguments. If None, argparse reads sys.argy
+
+    @return Exit code 0: for normal completion, 1 if the settings or source picture cannot be read or the pipeline fails, 
+    and 2 if settings are unusabel or the command-line arguments are invalid
+
+    @throws SystemExit argparse raises this for invalid command-line arguments
+    """
     
     parser = argparse.ArgumentParser(
         description="Show this computer's half of the dual-projector picture.")

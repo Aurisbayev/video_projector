@@ -12,12 +12,29 @@ from side import Side
 
 
 class MathClass(object):
+    """!
+    @brief Performs the mathematical calculations for the dual-projector system.
+    @details It converst the physical projector measurements into pixel positions and brightness values.
+    @details MathClass stores nothing. All methods belong to the class and are called without an object. Validation is handled by the SetupClass.
+    """
+
     # ˅
     
     # ˄
 
     @classmethod
     def overlapCm(cls, w, d):
+        """!
+        @brief Calculates the physical width of the overlapped region.
+
+        @details Width of the overlapped region \f(= w - d\f). 
+
+        @param w Width of the image projected from one projector, in cm.
+        @param d Distance between the two projectors in cm.
+
+        @return float Width of the overlapped region in cm.
+        """
+
         # ˅
         
         return float(w) - float(d)
@@ -25,6 +42,18 @@ class MathClass(object):
 
     @classmethod
     def totalWidthCm(cls, w, d):
+        """!
+        @brief Calculates the total physical width of the whole, combined image on the projection surface.
+        @altbrief Calculates the total physical width covered by both projectors.
+
+        @details Width of whole combined image \f(= w + d\f). 
+
+        @param w Width of the image projected from one projector in cm.
+        @param d Distance between the two projectors in cm.
+
+        @return float Total combined projection width in cm.
+        """
+
         # ˅
         
         return float(w) + float(d)
@@ -32,6 +61,17 @@ class MathClass(object):
 
     @classmethod
     def pxPerCm(cls, resX, w):
+        """!
+        @brief Calculates the screen's horizontal pixel density 
+
+        @details Horizontal pixels per centimeter of the screen \f(= resX / w\f). 
+
+        @param resX, the horizontal resolution of one projector in pixels.
+        @param w Width of the image projected by one projector in cm.
+
+        @return float horizontal pixel density [px/cm].
+        """
+
         # ˅
         
         if w <= 0:
@@ -41,6 +81,18 @@ class MathClass(object):
 
     @classmethod
     def overlapPx(cls, resX, w, d):
+        """!
+        @brief Calculates overlapped region's width in whole pixels
+
+        @details floor((w - d) * (resX / w) + 0.5). 
+
+        @param resX, the horizontal resolution of one projector in pixels.
+        @param w Width of the image projected from one projector in cm.
+        @param d Distance between the two projectors in cm.
+
+        @return integer Overlap width in whole pixels, rounded half up.
+        """
+
         # ˅
         
         # Round half up (not Python round(), which rounds halves to even).
@@ -53,6 +105,19 @@ class MathClass(object):
 
     @classmethod
     def cropRegion(cls, projectorSide, resX, w, d):
+        """!
+        @brief Calculates which portion of the combined image this projector shows.. 
+
+        @details LEFT starts at column 0 and is resX wide. Right starts at column resX - overlapPx and is resX wide.
+
+        @param projectorSide LEFT or RIGHT projector.
+        @param resX, the horizontal resolution of one projector in pixels.
+        @param w Width of the image projected from one projector in cm.
+        @param d Distance between the two projectors in cm.
+
+        @return Region The portion of the combined image displayed by this projector.
+        """
+        
         # ˅
         
         if not isinstance(projectorSide, Side):
@@ -65,6 +130,28 @@ class MathClass(object):
 
     @classmethod
     def blendMask(cls, overlapPx, resX, projectorSide, gamma):
+        """!
+        @brief Generates the fade (brightness multipliers) used to make the overlapping projector images blend together.
+
+        @details The fade's value is 1 outside the overlap. 
+
+        Inside the overlap, with t = (i + 0.5) / overlapPx for overlap column i.
+
+        LEFT is (1-t)^(1/gamma)
+        RIGHT is t^(1/gamma)
+
+        With gamma 1, the two sides add up to the full picture.
+
+
+        @param overlapPx Width of the overlapped region in whole pixels.
+        @param resX, the horizontal resolution of one projector in pixels.
+        @param projectorSide LEFT or RIGHT projector.
+        @param gamma Value controlling the shape of the fade.
+
+
+        @return Mask Blending mask containing brightness multipliers from 0 to 1 for this computer's image.
+        """
+
         # ˅
         
         if not isinstance(projectorSide, Side):

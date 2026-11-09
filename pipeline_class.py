@@ -20,6 +20,21 @@ _log = logging.getLogger(__name__)
 
 
 class PipelineClass(object):
+    """!
+    @brief Processes an image or video for projection.
+
+    @details Loads thes ource, sclaes it, crops the region for this projector, applies a blending mask, and displays the result. A video goes through the same steps for every frame. 
+
+    @var setup The settings, of type SetupClass
+    @var math The class used for calculations, of type MathClass
+    @var sourceFrame the image being processes, of type Image. After load(), it is the original. After scaleSource(), it is the combined image.
+    @var mask The blend mask for this side, built once in the constructor, of type Mask
+    @var output The image last shown, of type Image.
+    @var startAt double
+    @var region Region
+    @var QUIT_KEYS int[]
+    """
+
     # ˅
     
     ## Keys that stop a video: Esc and q.
@@ -28,6 +43,15 @@ class PipelineClass(object):
     # ˄
 
     def load(self):
+        """!
+        @brief Loads the source image using the path in the settings.
+
+        @returns The loaded Image object
+
+        @throws FileNotFoundError if the path is wrong. 
+        @throws ValueError if the file is not a readable picture.
+        """
+
         # ˅
         
         # Image.load() raises FileNotFoundError / ValueError naming the path.
@@ -39,6 +63,15 @@ class PipelineClass(object):
         # ˄
 
     def crop(self):
+        """!
+        @brief Extracts the portion of the combined image that belongs to this projector. 
+        @details The size is resX x resY
+
+        @returns Image sliceFrame Image slice for this projector. It is a copy, so applyMask() cannot change the source frame.
+
+        @throws ValueError if there is no source or the region does not fit.
+        """
+
         # ˅
         
         if self.__sourceFrame is None:
@@ -72,6 +105,17 @@ class PipelineClass(object):
         # ˄
 
     def applyMask(self, sliceFrame):
+        """!
+        @brief Applies the blending mask to the cropped image/frame.
+        @details Only the columns of the mask fades are calculated; columns with alpha 1 are copied. 
+
+        @param sliceFrame The cropped portion of the frame to be masked.
+
+        @returns Image (a new picture; the input is not changed).
+
+        @throws ValueError if there is no mask or the slice width does not match the mask length..
+        """
+
         # ˅
         
         if self.__mask is None:
@@ -96,6 +140,15 @@ class PipelineClass(object):
         # ˄
 
     def display(self, frame):
+        """!
+        @brief Opens a window on the selected monitor and displays the processed image.
+        @details The screens can only be read on macOS. Elsewhere the system places the window (see findProjectorScreens()).
+
+        @param frame, an Image object containing the final image.
+
+        @throws ValueError if frame is not an Image or is empty.
+        """
+
         # ˅
         
         if not isinstance(frame, Image):
@@ -121,6 +174,17 @@ class PipelineClass(object):
         # ˄
 
     def run(self):
+        """!
+        @brief Executes the pipeline processing.
+        @details A picture is loaded, scaled, cropped, masked and displayeyd. Each computer shows one side.
+
+        If isVideo() is true, it calls playVideo() and ends; otherwise it runs the picture steps.
+
+
+        @throws FileNotFoundError If the source file does not exist.
+        @throws ValueError If the source cannot be read, or a step fails.
+        """
+
         # ˅
         
         # The region and mask were built once in the constructor.
@@ -134,12 +198,30 @@ class PipelineClass(object):
         # ˄
 
     def isVideo(self):
+        """!
+        @brief Checks if the source path has a video extension.
+        @details Only the file extension is checked (see VideoSource.isVideoPath()).
+
+        @return bool True if sourcePath has a video extension, False otherwise [none].
+        """
+
         # ˅
         
         return VideoSource.isVideoPath(self.__setup.getSourcePath())
         # ˄
 
     def setStartAt(self, startAt):
+        """!
+        @brief Sets the shared start time or clears it with None.
+
+        Both computers must be given the same value.
+
+        @param startAt shared start time as seconds since 1970 (like time.time()) [s], or None to start with a key press.
+        @return None
+        @rtype None
+        @throws ValueError If the value is not a finite number or None, including True, False and text such as "14:30" (convert text with parseStartTime() first).
+        """
+
         # ˅
         
         if startAt is not None and (isinstance(startAt, bool) or not isinstance(startAt, (int, float))
@@ -149,6 +231,24 @@ class PipelineClass(object):
         # ˄
 
     def playVideo(self, clock=None):
+        """!
+        @brief Plays the video frame by frame synchronized with the shared start time or a key press.
+
+        @details The frame comes from the clock, so frames are skipped if processing takes too long. At the end of the video, the frame number wraps around and the video loops.
+
+        The first frame is shown while waiting for the start: the shared time from setStartAt(), or otherwise a key press. 
+        Esc or q during the wait stops without playing, and Esc or q stops the video. 
+        The window and the video file are closed when playing stops, also after an error.
+
+        With a shared start time, a computer started after that time joins at the frame that belongs to that moment, so two computers with the same clock show the same frame. The last processed frame is kept in output.
+
+        @param clock Function giving the time in seconds [s]. The default is the wall clock (time.time) when a shared start time is set, otherwise a steady clock (time.monotonic). Tests give their own.
+
+        @throws ValueError If processing steps encounter invalid values.
+        @throws FileNotFoundError If the video file does not exist.
+        @throws ValueError If the video cannot be opened or a frame cannot be read.
+        """
+
         # ˅
         
         path = self.__setup.getSourcePath()
@@ -191,6 +291,20 @@ class PipelineClass(object):
         # ˄
 
     def scaleSource(self):
+        """!
+        @brief Scales the source image or video frame to combined image size using crop or fit modees.
+
+        @details The result is always , 2 * resX - overlapPx by resY. 
+        Both modes keep the proportions without stretching.
+        "crop" cuts the extra edges and keeps the center.
+        "fit" shows the whole picture in the centre with black bars. 
+        It writes an INFO message when the aspect ratios differ, once per source size and mode.
+
+        @returns the scaled Image (which replaces the source frame).
+
+        @throws ValueError if load() was not called.
+        """
+
         # ˅
         
         if self.__sourceFrame is None:
@@ -240,6 +354,16 @@ class PipelineClass(object):
         # ˄
 
     def processFrame(self, array, masked=True):
+        """!
+        @brief Processes one video frame through scale, crop, and mask to produce this side's picture.
+        @details The frame replaces the source frame.
+
+        @param array One video frame (numpy array) [none].
+        @param masked True applies the mask, False leaves it out, to compare with and without the blend [none].
+        @return Image The processed frame as an Image object [none]
+        @throws ValueError If array is not a NumPy array, or scaling, cropping or masking fails.
+        """
+
         # ˅
         
         image = Image()
@@ -252,12 +376,32 @@ class PipelineClass(object):
 
     @staticmethod
     def __isQuitKey(key):
+        """!
+        @brief Checks if the provided key code corresponds to a quit action.
+
+        @details True if the key code (low 8 bits) is in QUIT_KEYS; False for -1 (no key).
+        Only the low 8 bits are compared, because some backends add modifier bits.
+
+        @param key The key code to check [none]
+        @return bool True if it is a quit key, False otherwise
+        """
+
         # ˅
         
         return key != -1 and (key & 0xFF) in PipelineClass.QUIT_KEYS
         # ˄
 
     def __init__(self, setup):
+        """!
+        @brief Stores settigs and builds the math object, region and mask once.
+
+        @param setup a loaded SetupClass
+
+        @returns Nothing
+
+        @throws ValueError if setup is missing or isn't loaded.
+        """
+
 
         self.__setup = None
 

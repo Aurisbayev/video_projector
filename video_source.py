@@ -11,6 +11,22 @@ import numpy as np
 
 
 class VideoSource(object):
+    """!
+    @brief Reads a video file one frame at a time.
+    @details 
+
+    @var path A string containing the location of the video file.
+    @var fps
+    @var frameCount
+    @var width
+    @var height
+    @var next
+    @var lastIndex
+    @var lastFrame
+    @var VIDEO_EXTENSIONS A list of file extensions treated as video (mp4, m4v, mov, avi, mkv, webm)
+    @var DEFAULT_FPS = 30. Used if the file reports no frame rate or an unusable one.
+    """
+
     # ˅
     
     ## File extensions treated as video, compared in lower case.
@@ -21,6 +37,12 @@ class VideoSource(object):
 
     @staticmethod
     def isVideoPath(path):
+        """!
+    @brief Determines whether the path given is a video based on its extension.
+    @param path a string file path.
+    @return bool True if a video, False otherwise.
+    """
+
         # ˅
         
         if not isinstance(path, str):
@@ -29,24 +51,46 @@ class VideoSource(object):
         # ˄
 
     def getFps(self):
+        """!
+        @brief Gives the frame rate of the video.
+        @return float fps 
+        """
+
         # ˅
         
         return self.__fps
         # ˄
 
     def getFrameCount(self):
+        """!
+        @brief Gives the number of frames in the video.
+        @return integer The total number of frames.
+        """
+
         # ˅
         
         return self.__frameCount
         # ˄
 
     def getShape(self):
+        """!
+        @brief Gives the size of one frame of the video.
+        @return Shape tuple (height, width, 3)
+        """
+
         # ˅
         
         return (self.__height, self.__width, 3)
         # ˄
 
     def frameAt(self, index):
+        """!
+        @brief Retrieves a specific frame from the video.
+        @details Uses internal attributes to keep track of which frame has already been read.
+        @param index, the frame number, starting from zero.
+        @return frame NumPy array containing the video frame.
+        """
+
         # ˅
         
         if self.__capture is None:
@@ -73,6 +117,10 @@ class VideoSource(object):
         # ˄
 
     def close(self):
+        """!
+        @brief Releases the video file.
+        """
+
         # ˅
         
         if self.__capture is not None:
@@ -81,6 +129,14 @@ class VideoSource(object):
         # ˄
 
     def __init__(self, path):
+        """!
+        @brief Opens a video and reads its frame rate, frame count, and frame size.
+        @throws ValueError if path is a empty string.
+        @throws FileNotFoundError if the video file could not be found.
+        @throws ValueError if file was corrupt or OpenCV does not supporti its codec.
+        @throws ValueError If frame count is <= 0.
+        """
+
 
         self.__path = None
 
@@ -145,6 +201,12 @@ START_TIME_FORMATS = ("%H:%M", "%H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d %H:%M:%S"
 
 
 def parseStartTime(text, now=None):
+    """!
+    @brief Converts a human-readable start time into a Unix timestamp.
+
+    @param A time string.
+    @now Optional datetime used mainly for testing. If omitted, the current local date and time are used.
+    """
     
     if not isinstance(text, str):
         raise ValueError("Start time must be text like 14:30:05, got %r" % (text,))
