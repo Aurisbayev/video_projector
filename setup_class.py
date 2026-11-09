@@ -27,37 +27,12 @@ _DEFAULT_SCALE = "crop"
 
 class SetupClass(object):
     # ˅
-    """!
-    @brief Reads the settings file and checks the settings.
-
-    The file holds projectorResXY, imageWidthCm, projectorSpacingCm, blendCurveGamma,
-    sourcePath (the path of the picture or video to show), projectorSide and scaleMode.
-    The attributes are private and are read through the getters.
-
-    The setting scaleMode says how the source is fitted to the combined image: crop fills
-    it and cuts the edges, fit shows the whole source with black bars. The setting is
-    optional, is not case sensitive, and ignores spaces around the text. A file without it
-    uses crop.
-    """
+    
     # ˄
 
     def load(self, path):
         # ˅
-        """!
-        @brief Reads the settings file and fills in the settings.
-
-        A relative sourcePath is relative to the settings file. The field scaleMode is
-        optional: a file without it uses crop.
-
-        @param path Path of the settings file.
-        @return None
-        @throws FileNotFoundError If the settings file does not exist.
-        @throws ValueError If the file is not valid JSON or has no JSON object at the top level.
-        @throws ValueError If a setting other than scaleMode is missing.
-        @throws ValueError If a setting has the wrong type or form.
-        @throws ValueError If scaleMode is present and is not crop or fit (also for numbers,
-                null and empty text).
-        """
+        
         try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -98,18 +73,7 @@ class SetupClass(object):
 
     def validate(self):
         # ˅
-        """!
-        @brief Checks that the loaded settings can be used.
-
-        Call it after load() and before using any setting. If a check fails, the reason is
-        logged. It also fails if scaleMode is not crop or fit.
-
-        It only checks that sourcePath exists: it does not open a video. A video that cannot
-        be opened is reported when playing starts (exit code 1, the message names the file).
-
-        @return True if all the settings can be used, otherwise False.
-        @rtype bool
-        """
+        
         res = self.__projectorResXY
         if (not isinstance(res, list) or len(res) != 2
                 or not all(isinstance(v, int) and not isinstance(v, bool) and v > 0 for v in res)):
@@ -148,78 +112,43 @@ class SetupClass(object):
 
     def getProjectorResXY(self):
         # ˅
-        """!
-        @brief Gives the projector resolution.
-
-        @return New list of two integers [width, height] [px], or None before load().
-        @rtype list
-        """
+        
         return list(self.__projectorResXY) if self.__projectorResXY is not None else None
         # ˄
 
     def getImageWidthCm(self):
         # ˅
-        """!
-        @brief Gives the width of the projected image from one projector.
-
-        @return Image width [cm].
-        @rtype float
-        """
+        
         return self.__imageWidthCm
         # ˄
 
     def getProjectorSpacingCm(self):
         # ˅
-        """!
-        @brief Gives the spacing between the projectors.
-
-        @return Projector spacing [cm].
-        @rtype float
-        """
+        
         return self.__projectorSpacingCm
         # ˄
 
     def getBlendCurveGamma(self):
         # ˅
-        """!
-        @brief Gives the gamma value for the blend curve.
-
-        @return Gamma value.
-        @rtype float
-        """
+        
         return self.__blendCurveGamma
         # ˄
 
     def getSourcePath(self):
         # ˅
-        """!
-        @brief Gives the path of the picture or video to show.
-
-        @return Path of the picture or video to show.
-        @rtype str
-        """
+        
         return self.__sourcePath
         # ˄
 
     def getProjectorSide(self):
         # ˅
-        """!
-        @brief Gives which projector this computer drives.
-
-        @return Side.LEFT or Side.RIGHT.
-        @rtype Side
-        """
+        
         return self.__projectorSide
         # ˄
 
     def getScaleMode(self):
         # ˅
-        """!
-        @brief Gives how the source is fitted to the combined image.
-
-        @return The value of scaleMode: crop or fit.
-        @rtype str
-        """
+        
         return self.__scaleMode
         # ˄
 
@@ -294,29 +223,11 @@ class SetupClass(object):
         raise ValueError("Setting '%s' must be one of %s, got %r" % (_KEY_SCALE, ", ".join(SCALE_MODES), value))
 
     def setScaleMode(self, mode):
-        """!
-        @brief Replaces scaleMode after load().
-
-        Used by the option `--scale-mode`. Like setProjectorSide(), it exists so that one
-        settings file can serve both computers.
-
-        @param mode crop or fit. Not case sensitive, spaces around the text are ignored.
-        @return None
-        @throws ValueError If mode is anything else.
-        """
+        
         self.__scaleMode = self.__toScaleMode(mode)
 
     def setProjectorSide(self, side):
-        """!
-        @brief Replaces the side loaded from the file.
-
-        Used by the option `--side`. It exists so that both computers can share one
-        settings file.
-
-        @param side Which projector this computer drives, Side.LEFT or Side.RIGHT.
-        @return None
-        @throws ValueError If side is not a Side.
-        """
+        
         if not isinstance(side, Side):
             raise ValueError("side must be a Side, got %r" % (side,))
         self.__projectorSide = side

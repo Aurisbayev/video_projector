@@ -12,12 +12,7 @@ import numpy as np
 
 class VideoSource(object):
     # ˅
-    """!
-    @brief Reads a video file one frame at a time.
-
-    PipelineClass uses this class to play a video. It is a helper class: it does no
-    projection calculations.
-    """
+    
     ## File extensions treated as video, compared in lower case.
     VIDEO_EXTENSIONS = (".mp4", ".m4v", ".mov", ".avi", ".mkv", ".webm")
     ## Frame rate used if the file reports no frame rate, or an unusable one [frames per second].
@@ -27,16 +22,7 @@ class VideoSource(object):
     @staticmethod
     def isVideoPath(path):
         # ˅
-        """!
-        @brief Tells whether a path has a video file extension.
-
-        Only the extension is checked (in VIDEO_EXTENSIONS). The file is not opened.
-
-        @param path Path of a picture or video file.
-        @return True if the extension is a video extension. False otherwise, also for
-                anything that is not text.
-        @rtype bool
-        """
+        
         if not isinstance(path, str):
             return False
         return os.path.splitext(path)[1].lower() in VideoSource.VIDEO_EXTENSIONS
@@ -44,52 +30,25 @@ class VideoSource(object):
 
     def getFps(self):
         # ˅
-        """!
-        @brief Gives the frame rate of the video.
-
-        @return Number of frames per second [frames per second].
-        @rtype float
-        """
+        
         return self.__fps
         # ˄
 
     def getFrameCount(self):
         # ˅
-        """!
-        @brief Gives the number of frames in the video.
-
-        @return Number of frames.
-        @rtype int
-        """
+        
         return self.__frameCount
         # ˄
 
     def getShape(self):
         # ˅
-        """!
-        @brief Gives the size of one frame of the video.
-
-        @return (height, width, 3): height [px], width [px] and the 3 colour channels.
-        @rtype tuple
-        """
+        
         return (self.__height, self.__width, 3)
         # ˄
 
     def frameAt(self, index):
         # ˅
-        """!
-        @brief Gives one frame of the video.
-
-        The next frame is read on. A later frame is reached by skipping the frames in
-        between, and an earlier one (when the video loops) by seeking back. Asking for the
-        same frame twice in a row gives the stored picture without reading again.
-
-        @param index Frame number, counted from 0.
-        @return The frame as a NumPy array (BGR colours, 8 bits per colour).
-        @rtype numpy.ndarray
-        @throws ValueError If the video is closed, the index is out of range or not an
-                integer, or the frame cannot be skipped to or read.
-        """
+        
         if self.__capture is None:
             raise ValueError("The video is closed")
         if not isinstance(index, (int, np.integer)) or not 0 <= index < self.__frameCount:
@@ -115,13 +74,7 @@ class VideoSource(object):
 
     def close(self):
         # ˅
-        """!
-        @brief Releases the video file.
-
-        A second call does nothing.
-
-        @return None
-        """
+        
         if self.__capture is not None:
             self.__capture.release()
             self.__capture = None
@@ -192,17 +145,7 @@ START_TIME_FORMATS = ("%H:%M", "%H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d %H:%M:%S"
 
 
 def parseStartTime(text, now=None):
-    """!
-    @brief Turns a start time typed by a person into seconds since 1970, the same kind of number time.time() gives.
-
-    Accepted forms are HH:MM, HH:MM:SS (today, local time) and YYYY-MM-DD HH:MM, YYYY-MM-DD HH:MM:SS (that day, local time). Spaces around the text are ignored. A time that has already passed is accepted: the video then joins at the frame that belongs to that moment.
-
-    @param text The start time string to parse [none].
-    @param now The current time as a datetime, only given by tests [none].
-    @return The parsed time in seconds since 1970 [s].
-    @rtype float
-    @throws ValueError If the input is not text, or if the text does not match the accepted forms (including impossible times like 25:00).
-    """
+    
     if not isinstance(text, str):
         raise ValueError("Start time must be text like 14:30:05, got %r" % (text,))
     text = text.strip()

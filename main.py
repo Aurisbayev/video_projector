@@ -37,22 +37,7 @@ EXIT_INVALID = 2
 
 
 def main(argv=None):
-    """!
-    @brief Executes the main program flow including parsing options, loading settings, and running the pipeline.
-
-    Order inside main(): read the options (a wrong --start-at stops here), load the settings, apply --side and --scale-mode, validate(), create the pipeline, set the start time (video only), run().
-
-    @param argv Command-line arguments list [none].
-    @return Exit code indicating success (0), read/open error (1), or validation/option error (2) [none].
-    @rtype int
-    @throws SystemExit argparse raises this with code 2 for invalid command-line arguments,
-            also for a bad --start-at time, and with code 0 for --help.
-
-    Only OSError and ValueError are turned into exit code 1. Any other error, such as
-    cv2.error from the window, ends the program with a traceback. If the source file does
-    not exist, validate() fails, so the exit code is 2. If argv is None, argparse reads
-    sys.argv.
-    """
+    
     parser = argparse.ArgumentParser(
         description="Show this computer's half of the dual-projector picture.")
     parser.add_argument("settings", help="path to the settings JSON file")

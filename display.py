@@ -8,43 +8,18 @@ import numpy as np
 
 class Display(object):
     # ˅
-    """!
-    @brief Opens a window on one chosen screen and shows frames in it.
-
-    The window starts as a normal window. Call setFullscreen() after the first show() to
-    make it full-screen.
-
-    The module functions screenRects() and findProjectorScreens() find the connected
-    screens. findProjectorScreens() works only on macOS. On other systems it returns
-    (None, 0).
-    """
+    
     # ˄
 
     def setScreen(self, index):
         # ˅
-        """!
-        @brief Select the target monitor by index and remember that number.
-        @param index index into screens (0 is the primary monitor) [none].
-        @return None
-        @rtype None
-        @throws IndexError If screens is not configured or the index is out of range.
-        @throws ValueError If index is not an integer.
-
-        An open window moves to the new monitor on the next show().
-        """
+        
         self.__screen = self.__resolveIndex(index)
         # ˄
 
     def setFullscreen(self, enabled=True):
         # ˅
-        """!
-        @brief Set the desired fullscreen state and apply it immediately if a window exists.
-        @param enabled True for fullscreen, False for a normal window [none].
-        @return None
-        @rtype None
-        @throws RuntimeError If called before the window is created.
-        @throws RuntimeError If the window was closed.
-        """
+        
         if not self.__windowOpen:
             raise RuntimeError(
                 "setFullscreen() requires an open window: call show() first "
@@ -60,24 +35,14 @@ class Display(object):
 
     def isFullscreen(self):
         # ˅
-        """!
-        @brief Return the desired fullscreen state.
-        @return True if fullscreen is enabled, False otherwise [none].
-        @rtype bool
-        """
+        
         return self.__fullscreen
         # ˄
 
     @staticmethod
     def buildTestImage(width=1280, height=720):
         # ˅
-        """!
-        @brief Build a test frame (BGR) with colour bars, a checker pattern and text.
-        @param width frame width [px].
-        @param height frame height [px].
-        @return A numpy.ndarray of shape (height, width, 3) and dtype uint8 [none].
-        @rtype numpy.ndarray
-        """
+        
         upperHeight = height // 2
         lowerHeight = height - upperHeight
 
@@ -105,19 +70,7 @@ class Display(object):
 
     def show(self, frame):
         # ˅
-        """!
-        @brief Show a frame in the window.
-
-        The first call creates the window. If screens is configured, move and resize the window to the selected monitor.
-
-        @param frame image to display (numpy.ndarray) [none].
-        @return None
-        @rtype None
-        @throws ValueError If frame is not a numpy.ndarray.
-
-        The window is placed on the first call and again only if the screen is
-        changed, so show() can be called for every frame of a video.
-        """
+        
         if not isinstance(frame, np.ndarray):
             raise ValueError(
                 f"frame must be a numpy.ndarray, got {type(frame).__name__}"
@@ -144,25 +97,13 @@ class Display(object):
 
     def waitKey(self, delayMs=0):
         # ˅
-        """!
-        @brief Wait delayMs milliseconds for a key press and return the key code (-1 if none).
-        @param delayMs wait time [ms]. 0 waits indefinitely.
-        @return The key code [none].
-        @rtype int
-        """
+        
         return cv2.waitKey(delayMs)
         # ˄
 
     def close(self):
         # ˅
-        """!
-        @brief Destroy the window.
-
-        Does nothing if there is no window or on calls after the first.
-
-        @return None
-        @rtype None
-        """
+        
         if not self.__windowOpen:
             return
         cv2.destroyWindow(self.__windowName)
@@ -284,28 +225,14 @@ class Display(object):
 
 # ˅
 def screenRects(cocoaFrames):
-    """!
-    @brief Convert macOS screen frames to (x, y, width, height) with the origin at the top left.
-    @param cocoaFrames [(x, y, width, height), ...] in macOS coordinates (origin at the bottom left of the primary screen) [none]. The first entry is the primary screen.
-    @return A list of converted screen frames [none].
-    @rtype list
-    """
+    
     primaryHeight = cocoaFrames[0][3]
     return [(int(x), int(primaryHeight - (y + height)), int(width), int(height))
             for x, y, width, height in cocoaFrames]
 
 
 def findProjectorScreens():
-    """!
-    @brief Return the connected screens and the one to use for the projector.
-
-    The projector is the first screen that is not the primary one. With a single screen, or if the screens cannot be read, the primary screen (index 0) is used and screens may be None, which leaves the window placement to the system.
-
-    @return A tuple of (screens, index) [none].
-    @rtype tuple
-
-    This works only on macOS, where the screens are read through AppKit.
-    """
+    
     try:
         import AppKit
         frames = [(f.origin.x, f.origin.y, f.size.width, f.size.height)
@@ -339,13 +266,7 @@ if __name__ == "__main__":
     screens = [(0, 0, 1920, 1080)]
 
     def buildTestImage(width=1280, height=720):
-        """!
-        @brief Build a test frame (BGR) with text overlaid on colour bars and a checker pattern.
-        @param width frame width [px].
-        @param height frame height [px].
-        @return A numpy.ndarray of shape (height, width, 3) and dtype uint8 [none].
-        @rtype numpy.ndarray
-        """
+        
         upperHeight = height // 2
         lowerHeight = height - upperHeight
 
