@@ -27,17 +27,21 @@ _DEFAULT_SCALE = "crop"
 
 class SetupClass(object):
     """!
-    @brief Reads and stores the values from the settings file, validating and providing access to them.
+    @brief Loads, validates, stores, and provides access to projection settings.
 
-    @details 
+    @details Settings are read from a JSON file. The required values describe the
+    projector resolution, projected image width, projector spacing, blend gamma,
+    source path, and projector side. The optional scaleMode setting defaults to
+    "crop"; supported modes are "crop" and "fit".
+
     \par Class Attributes: 
-    projectorResXY: A list of two integers, The projector's resolution as width and height in pixels\n
-    imageWidthCm: A double, the width of the image projected from one projector in cm.\n
-    projectorSpacing: A double, the physical distance between each projector.\n
-    blendCurveGamma: A double, Gamma that shapes the fade in the overlay.\n
-    sourcePath: A string containing the image-file path\n
-    projectorSide: LEFT or RIGHT projector.\n
-    scaleMode: A string, crop (default) or fit. Explains how the source is fitted to the combined image: crop fills it and cuts the edges, fit shows the whole source with black bars.
+    projectorResXY: [int] Projection resolution as a list in the form (horizontal width, vertical height), in pixels.\n
+    imageWidthCm: [double], Physical width of the image projected by one projector in cm.\n
+    projectorSpacing: [double], Physical distance between the two projectors.\n
+    blendCurveGamma: [double], Positive value controlling the overlap fade shape.\n
+    sourcePath: [string], Path of the source image or video.\n
+    projectorSide: [Side] Identifies the projector controlled by this computer (Side.LEFT or Side.RIGHT).\n
+    scaleMode: [string] Source scaling mode: "crop" (default) or "fit". Explains how the source is fitted to the combined image: crop fills it and cuts the edges, fit shows the whole source with black bars.
     """
 
     # ˅
@@ -46,12 +50,13 @@ class SetupClass(object):
 
     def load(self, path):
         """!
-        @brief Reads the settings file and stores its values in the object.
+        @brief Reads the JSON settings file and stores its values in this object.
 
-        @details
+        @details Relative sourcePath values are resolved relative to the directory
+        containing the settings file. If scaleMode is absent, the default "crop" is used.
 
-        @param path A string containing the location of the settings file.
-
+        @param path [string] Path to the JSON settings file.
+        @return None.
         @throws FileNotFoundError if the file does not exist. 
         @throws ValueError if it is not valid JSON, is not a JSON object, lacks a setting, or a setting has the wrong type. The message names the setting.
         """
@@ -98,7 +103,7 @@ class SetupClass(object):
 
     def validate(self):
         """!
-        @brief Validates the loaded settings. If not, writes the reason to the log.
+        @brief Validates the loaded settings. If not, writes the failure reason to the log.
 
         @details Checks the following:
                 The resolution is two positive integers.
@@ -107,8 +112,9 @@ class SetupClass(object):
                 gamma is inside the allowed range (0.5 to 3.0).
                 The source picture exists.
                 The side is LEFT or RIGHT.
+                scaleMode is supported.
 
-        @returns bool True if all checks pass, otherwise False.
+        @returns [bool] True when all checks pass; otherwise False.
         """
 
         # ˅
@@ -151,9 +157,10 @@ class SetupClass(object):
 
     def getProjectorResXY(self):
         """!
-        @brief Gives the projector resolution.
+        @brief Returns the configured projector resolution.
 
-        @returns ProjectResXY.
+        @returns list [int] A copy of (horizontal resolution, vertical resolution) in pixels 
+        or None if settings have not been loaded.
         """
 
         # ˅
@@ -163,9 +170,9 @@ class SetupClass(object):
 
     def getImageWidthCm(self):
         """!
-        @brief Gives the width of the projected image from one projector in cm.
+        @brief Returns the physical projected image width for one projector.
 
-        @returns imageWidthCm.
+        @returns [double] Image width in cm.
         """
 
         # ˅
@@ -175,9 +182,9 @@ class SetupClass(object):
 
     def getProjectorSpacingCm(self):
         """!
-        @brief Gives the distance between the two projectors in cm.
+        @brief Returns the physical distance between the two projectors.
 
-        @returns ProjectorSpacingCm.
+        @returns [double] Projector spacing in cm. 
         """
 
         # ˅
@@ -187,9 +194,9 @@ class SetupClass(object):
 
     def getBlendCurveGamma(self):
         """!
-        @brief Gives the gamma that shapes blend curve.
+        @brief Returns the gamma value used to shape the overlap blend curve.
 
-        @returns blendeCurveGamma.
+        @returns [double] Blend-curve gamma.
         """
 
         # ˅
@@ -199,9 +206,9 @@ class SetupClass(object):
 
     def getSourcePath(self):
         """!
-        @brief Gives the path of the source-image (the image to be projected).
+        @brief Returns the path of the source image or video.
 
-        @returns sourcePath.
+        @returns [string] Source file path.
         """
 
         # ˅
@@ -223,11 +230,11 @@ class SetupClass(object):
 
     def getScaleMode(self):
         """!
-        @brief Gives how the source is fitted to the combined image.
+        @brief Returns the mode used to fit the source into the combined image.
 
         @details Has it been cropped or fitted?
 
-        @returns The value of scaleMode: crop or fit.
+        @returns [string] "crop" or "fit".
         """
 
         # ˅
@@ -236,6 +243,11 @@ class SetupClass(object):
         # ˄
 
     def __init__(self):
+
+        """!
+        @brief Creates an empty settings object.
+        @details The default scale mode is "crop"; other settings are populated by load().
+        """
 
         self.__projectorResXY = None
 
@@ -304,9 +316,9 @@ class SetupClass(object):
 
     def setScaleMode(self, mode):
         """!
-        @brief Replaces scaleMode.
-        @param crop or fit.
-        @throws ValueError if mode is anything else.
+        @brief Replaces configured scaleMode.
+        @param mode [string] "crop" or "fit".
+        @return None.
         """
 
         
@@ -314,9 +326,11 @@ class SetupClass(object):
 
     def setProjectorSide(self, side):
         """!
-        @brief Replaces the side loaded from the settings file.
+        @brief Replaces the projector side loaded from the settings file.
 
-        @param Side.LEFT or Side.RIGHT.
+        @param [Side] Side.LEFT or Side.RIGHT.
+
+        @return None.
 
         @throws ValueError if side is not a Side.
         """

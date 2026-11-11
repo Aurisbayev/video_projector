@@ -7,14 +7,12 @@
 
 class Region(object):
     """!
-    @brief Represents a horizontal section of the combined image that a particular that this projector shows. 
+    @brief Represents the horizontal pixel region of the combined image showned by one projector. 
 
     @details
     \par Class Attributes:
-    xStartPx Starting horizontal pixel position.\n
-    widthPx Width of the region in pixels.
-
-    @details
+    xStartPx [int], First horizontal pixel column in the region.\n
+    widthPx [int], Number of horizontal pixel columns in the region.
     """
 
     # ˅
@@ -25,7 +23,7 @@ class Region(object):
         """!
         @brief Returns the starting column for the region.
 
-        @return integer representing the starting column.
+        @return [integer], Starting column index, measured from the left edge of the combined image.
         """
 
         # ˅
@@ -35,9 +33,9 @@ class Region(object):
 
     def getWidthPx(self):
         """!
-        @brief Returns the region's width.
+        @brief Returns the horizontal width of this region.
 
-        @return integer representing the region's width.
+        @return [integer], Number of pixel columns in this region.
         """
 
         # ˅
@@ -49,8 +47,8 @@ class Region(object):
         """!
         @brief Initializes the Region object.
 
-        @param xStartPx Starting horizontal pixel position.
-        @param widthPx Width of the region in pixels.
+        @param xStartPx [int], Index of the first horizontal pixel column.
+        @param widthPx [int], Number of columns included in the region.
         """
 
 

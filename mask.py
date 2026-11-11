@@ -24,7 +24,7 @@ class Mask(object):
         """!
         @brief Returns the brightness multipliers stored in this mask.
 
-        @return alpha [double] List of floating-point brightness multipliers (Between 0.0 and 1.0), one per horizontal pixel column.
+        @return alpha [double], List of floating-point brightness multipliers (Between 0.0 and 1.0), one per horizontal pixel column.
         """
 
         # ˅
@@ -36,7 +36,7 @@ class Mask(object):
         """!
         @brief Initializes the Mask object with the supplied alpha.
 
-        @param alpha [double] List of floating-point brightness multipliers (Between 0.0 and 1.0), one per horizontal pixel column.
+        @param alpha [double], List of floating-point brightness multipliers (Between 0.0 and 1.0), one per horizontal pixel column.
 
         @return None.
         """
@@ -48,11 +48,6 @@ class Mask(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self, alpha)
-    #  @brief Initializes the Mask instance.
-    #
-    #  @param alpha List of floats between 0 and 1, one per pixel column.
-
     # ˄
 
 

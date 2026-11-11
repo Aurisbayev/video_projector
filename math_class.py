@@ -112,7 +112,7 @@ class MathClass(object):
 
         @details The LEFT projector starts at column 0 and is resX wide. The RIGHT projector starts at column resX - overlapPx and is resX wide.
 
-        @param projectorSide [Side], The LEFT or RIGHT projector.
+        @param projectorSide: [Side] Identifies the projector controlled by this computer (Side.LEFT or Side.RIGHT).
         @param resX [int], The horizontal resolution of one projector, in pixels.
         @param w [double], Width of the image projected from one projector, in cm.
         @param d [double], Distance between the two projectors, in cm.
@@ -147,7 +147,7 @@ class MathClass(object):
 
         @param overlapPx, Width of the overlap, in pixels.
         @param resX [int], The horizontal resolution of one projector, in pixels.
-        @param projectorSide [Side], The LEFT or RIGHT projector.
+        @param projectorSide: [Side] Identifies the projector controlled by this computer (Side.LEFT or Side.RIGHT).
         @param gamma [double], Value controlling the shape of the fade.
 
 

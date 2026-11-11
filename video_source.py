@@ -12,18 +12,18 @@ import numpy as np
 
 class VideoSource(object):
     """!
-    @brief Reads a video file one frame at a time.
+    @brief Opens a video file and provides access to its frames by index.
     @details 
 
     \par Class Attributes:
-    path A string containing the location of the video file.
-    fps
-    frameCount
-    width
-    height
-    next
-    lastIndex
-    lastFrame
+    path [string] Path to the video file.
+    fps [double] Video frame rate in frames per second.
+    frameCount [int] Total number of frames in the video.
+    width [int] Frame width in pixels.
+    height [int] Frame height in pixels.
+    next [int] Index of the next frame position to read.
+    lastIndex [int] Index of the cached frame.
+    lastFrame [ndarray] Cached video frame.
     """
 
     # ˅
@@ -37,9 +37,10 @@ class VideoSource(object):
     @staticmethod
     def isVideoPath(path):
         """!
-    @brief Determines whether the path given is a video based on its extension.
-    @param path a string file path.
-    @return bool True if a video, False otherwise.
+    @brief Determines whether a path is a recognized video file extension.
+    @details The comparison is case-insensitive.
+    @param [path] a string file path.
+    @return [bool] True if the extension is in VIDEO_EXTENSIONS; otherwise False.
     """
 
         # ˅
@@ -51,8 +52,9 @@ class VideoSource(object):
 
     def getFps(self):
         """!
-        @brief Gives the frame rate of the video.
-        @return fps 
+        @brief Returns the video's frame rate.
+        @return [double] Frames per second. DEFAULT_FPS is used if OpenCV reports an 
+        unusable frame rate. 
         """
 
         # ˅
@@ -62,8 +64,8 @@ class VideoSource(object):
 
     def getFrameCount(self):
         """!
-        @brief Gives the number of frames in the video.
-        @return frameCount.
+        @brief Returns the total number of frames reported for the video.
+        @return [int] Number of frames.
         """
 
         # ˅
@@ -73,8 +75,8 @@ class VideoSource(object):
 
     def getShape(self):
         """!
-        @brief Gives the size of one frame of the video.
-        @return Shape.
+        @brief Returns the dimensions of a video frame.
+        @return [tuple] Frame shape as (height, width, 3), where 3 is the BGR channel count.
         """
 
         # ˅
@@ -84,10 +86,16 @@ class VideoSource(object):
 
     def frameAt(self, index):
         """!
-        @brief Retrieves a specific frame from the video.
-        @details Uses internal attributes to keep track of which frame has already been read.
-        @param index, the frame number, starting from zero.
-        @return frame, a NumPy array containing the video frame.
+        @brief Retrieves the video frame at the requested index (zero-based).
+
+        @details Returns the cached frame when the requested index is the cached index.
+        For later frames, it reads and skips the frames in between. 
+        For earlier frames, it moves the video back to the requested position before reading
+        
+        @param index [int], Zero-based frame index.
+        @return [ndarray], Requested video frame.
+        @throws ValueError If the video is closed, index is outside the value range,
+        or the frame cannot be skipped to or read.
         """
 
         # ˅
@@ -117,7 +125,8 @@ class VideoSource(object):
 
     def close(self):
         """!
-        @brief Releases the video file.
+        @brief Releases the video file and frees the resources used to read it.
+        @return None.
         """
 
         # ˅
@@ -129,11 +138,13 @@ class VideoSource(object):
 
     def __init__(self, path):
         """!
-        @brief Opens a video and reads its frame rate, frame count, and frame size.
-        @throws ValueError if path is a empty string.
+        @brief Opens a video and reads its basic properties
+
+        @param [path] a string file path.
+
+        @throws ValueError if path is empty, the video cannot be opened/decoded, 
+        or its frame count is not positive
         @throws FileNotFoundError if the video file could not be found.
-        @throws ValueError if file was corrupt or OpenCV does not supporti its codec.
-        @throws ValueError If frame count is <= 0.
         """
 
 
@@ -193,8 +204,16 @@ def parseStartTime(text, now=None):
     """!
     @brief Converts a human-readable start time into a Unix timestamp.
 
-    @details Optional datetime used mainly for testing. If omitted, the current local date and time are used.
-    @param A time string.
+    @details Accepted formats are HH:MM, HH:MM:SS, YYYY-MM-DD HH:MM, 
+    and YYYY-MM-DD HH:MM:SS. 
+    
+    @param text [string], String containing the time to start.
+    @param now Optional datetime.datetime used as the reference date; defaults to 
+    the current local date and time; mainly for testing purposes.
+
+    @return [float] Unix timestamp in seconds.
+    
+    @throws ValueError If text is not a string or does not match a supported format.
     """
     
     if not isinstance(text, str):

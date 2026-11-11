@@ -9,7 +9,10 @@ from enum import Enum
 
 class Side(Enum):
     """!
-    @brief Identifies the side of the dual projector system
+    @brief Identifies which projector is controlled by a computer in the dual projector system.
+    
+    @details The two values distinguish the left and right projector. They are used 
+    when calculating the crop region and the overlap brightness mask.
     """
 
     ## Left projector, represented by the value 1 

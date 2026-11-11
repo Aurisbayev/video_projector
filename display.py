@@ -297,8 +297,8 @@ def screenRects(cocoaFrames):
     
     @details Cocoa system uses a bottom-left origin. This function transforms it into the more common top-left origin coordinate system.
     
-    @param cocoaFrames List of monitor rectangles as (x, y, width, height). The first is the primary monitor.
-    @returns screens List of (x, y, width, height) rectangles with a top-left origin. 
+    @param cocoaFrames, List of monitor rectangles as (x, y, width, height). The first is the primary monitor.
+    @returns screens, List of (x, y, width, height) rectangles with a top-left origin. 
     """
 
     primaryHeight = cocoaFrames[0][3]
@@ -315,7 +315,7 @@ def findProjectorScreens():
     With one monitor, or if the monitors cannot be read, it uses the primary one.
     @raisewarning Works only on macOS. On other systems, returns (None, 0)
 
-    @returns (screens, index) screens may be none.
+    @returns (screens, index), screens may be none.
 
     """
 

@@ -57,7 +57,7 @@ class Image(object):
     def getFrame(self):
         """!
         @brief Returns the pixel array currently stored in this object.
-        @returns numpy.ndarray The stored frame, or None if no frame has been loaded or set.
+        @returns numpy.ndarray, The stored frame, or None if no frame has been loaded or set.
         """
 
         # ˅
@@ -68,7 +68,7 @@ class Image(object):
     def getShape(self):
         """!
         @brief Returns the dimensions of the stored pixel array.
-        @returns tuple Array's shape in the form (height, width, channels).
+        @returns tuple, Array's shape in the form (height, width, channels).
         @throws ValueError if no frame is stored.
         """
 
@@ -98,7 +98,7 @@ class Image(object):
 
         @details Used for the results of scaling, cropping and masking.
 
-        @param frame [ndarray] Image pixel data.
+        @param frame [ndarray], Image pixel data.
         @throws ValueError if frame is not a NumPy array.
         """
         
