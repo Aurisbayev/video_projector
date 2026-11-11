@@ -5,11 +5,52 @@ start time. It is the video version of the PBL4 dual-projector project (`project
 in its own repository. Pictures and the test video are not in Git: make the test video with
 `python tools/make_test_video.py`, and put your own pictures wherever `sourcePath` points.
 
-A pipeline for multi-projector edge blending: it crops a source image for each projector (left / right), applies a blend mask to the overlapping region, and displays the result.
+## Quick start
+
+**1. Install (once).** With [uv](https://docs.astral.sh/uv/) (see Option A below to install it):
+
+```bash
+git clone https://github.com/maksym-syd/video_projector.git
+cd video_projector
+uv sync
+```
+
+Without uv, any Python 3.12 or newer works:
+
+```bash
+git clone https://github.com/maksym-syd/video_projector.git
+cd video_projector
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+On Windows, type `py` instead of `python3`.
+
+**2. Try it on one computer (no projectors needed):**
+
+```bash
+uv run python instant_run.py       # without uv: python instant_run.py
+```
+
+A window shows both sides joined, with the test video playing (it is made the first time). Press
+`q` or `ESC` to close it.
+
+**3. Run it on the two projectors.** On the laptop for the left projector:
+
+```bash
+uv run python instant_run.py --left --start-in 30      # without uv: python instant_run.py --left --start-in 30
+```
+
+It prints the command for the right laptop, with the same start time. Run that on the second
+laptop within 30 seconds, and both start together. More options are in
+[Quick test on the projectors](#quick-test-on-the-projectors).
+
+---
 
 ## Requirements
 
-- Python **3.14** (pinned in `.python-version`)
+- Python **3.14** (pinned in `.python-version`; uv installs it). With pip, Python 3.12 and 3.13 work too
 - Dependencies (defined in `pyproject.toml`, locked in `uv.lock`)
   - Runtime: `numpy`, `opencv-python`
   - Development: `pytest`
@@ -63,8 +104,9 @@ uv sync
 ### 3. Run the code
 
 ```bash
-uv run python <script>.py
-uv run pytest
+uv run python instant_run.py       # quick test, see Quick start above
+uv run python main.py settings.json --side LEFT
+uv run pytest                      # run the tests
 ```
 
 `uv run` always uses the project's virtual environment, so you don't need to activate it.
@@ -132,8 +174,9 @@ pip install -r requirements.txt
 With the virtual environment activated:
 
 ```bash
-python <script>.py
-pytest
+python instant_run.py              # quick test, see Quick start above
+python main.py settings.json --side LEFT
+pytest                             # run the tests (needs requirements-dev.txt)
 ```
 
 Run `deactivate` to leave the virtual environment.
