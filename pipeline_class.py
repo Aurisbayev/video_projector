@@ -25,14 +25,6 @@ class PipelineClass(object):
 
     @details Loads thes ource, sclaes it, crops the region for this projector, applies a blending mask, and displays the result. A video goes through the same steps for every frame. 
 
-    @var setup The settings, of type SetupClass
-    @var math The class used for calculations, of type MathClass
-    @var sourceFrame the image being processes, of type Image. After load(), it is the original. After scaleSource(), it is the combined image.
-    @var mask The blend mask for this side, built once in the constructor, of type Mask
-    @var output The image last shown, of type Image.
-    @var startAt double
-    @var region Region
-    @var QUIT_KEYS int[]
     """
 
     # ˅

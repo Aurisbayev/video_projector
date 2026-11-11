@@ -9,9 +9,6 @@ class Region(object):
     """!
     @brief Represents a horizontal section of the combined image that a particular that this projector shows. 
 
-    @var xStartPx Starting horizontal pixel position.
-    @var widthPx Width of the region in pixels.
-
     @details
     """
 

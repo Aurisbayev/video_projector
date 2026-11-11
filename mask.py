@@ -7,9 +7,7 @@
 
 class Mask(object):
     """!
-    @brief The brightness multipliers for one image.
-    @altbrief Stores the brightness multipliers used to blend the overlapping projecor images.
-    @vars alpha a list of brightness multipliers (floats between 0 and 1), one for each horizontal pixel column.
+    @brief Stores the brightness multipliers used to blend the overlapping projecor images.
     """
 
     # ˅
@@ -30,7 +28,7 @@ class Mask(object):
     def __init__(self, alpha):
         """!
         @brief Initializes the Mask object.
-        @return alpha list of floats between 0 and 1, one per pixel column.
+        @param alpha list of floats between 0 and 1, one per pixel column.
         """
 
         self.__alpha = None
