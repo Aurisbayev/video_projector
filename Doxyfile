@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "Dual-Projector Projection System"
-PROJECT_NUMBER         = 
+PROJECT_NUMBER         =
 PROJECT_BRIEF          =
 PROJECT_LOGO           = ./website/website-images/logo.svg
 PROJECT_ICON           = ./website/website-images/icon.svg
@@ -41,13 +41,13 @@ PYTHON_DOCSTRING       = YES
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
-ALIASES                = "rtype=@par Return type:^^"
+ALIASES                =
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = YES
 OPTIMIZE_FOR_FORTRAN   = NO
 OPTIMIZE_OUTPUT_VHDL   = NO
 OPTIMIZE_OUTPUT_SLICE  = NO
-EXTENSION_MAPPING      =
+EXTENSION_MAPPING      = 
 MARKDOWN_SUPPORT       = YES
 MARKDOWN_STRICT        = YES
 TOC_INCLUDE_HEADINGS   = 6
@@ -71,7 +71,7 @@ TIMESTAMP              = NO
 # Build related configuration options
 #---------------------------------------------------------------------------
 EXTRACT_ALL            = NO
-EXTRACT_PRIVATE        = NO
+EXTRACT_PRIVATE        = YES
 EXTRACT_PRIV_VIRTUAL   = NO
 EXTRACT_PACKAGE        = NO
 EXTRACT_STATIC         = NO
@@ -186,21 +186,21 @@ FILE_PATTERNS          = *.c \
                          *.qsf \
                          *.ice
 RECURSIVE              = YES
-EXCLUDE                = .venv \
-                         .herd \
-                         tests 
-EXCLUDE_SYMLINKS       = YES
-EXCLUDE_PATTERNS       =
+EXCLUDE                = ./tests \
+                         .venv \
+                         .herd
+EXCLUDE_SYMLINKS       = NO
+EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        =
 EXAMPLE_PATH           =
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = NO
-IMAGE_PATH             = ./website/website-images
+IMAGE_PATH             = website/website-images
 INPUT_FILTER           =
 FILTER_PATTERNS        =
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
-USE_MDFILE_AS_MAINPAGE = ./website/mainpage.md
+USE_MDFILE_AS_MAINPAGE = YES
 IMPLICIT_DIR_DOCS      = YES
 FORTRAN_COMMENT_AFTER  = 72
 #---------------------------------------------------------------------------
@@ -234,8 +234,7 @@ HTML_HEADER            = ./website/header.html
 HTML_FOOTER            = ./website/footer.html
 HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  = ./website/doxygen-awesome-css/doxygen-awesome-projector.css
-HTML_EXTRA_FILES       = diagram/MainDiagram.png \
-                         website/website-images/projector_geometry.webp
+HTML_EXTRA_FILES       = diagram/MainDiagram.png
 HTML_COLORSTYLE        = AUTO_LIGHT
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
