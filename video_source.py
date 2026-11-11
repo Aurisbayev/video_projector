@@ -14,6 +14,17 @@ class VideoSource(object):
     """!
     @brief Reads a video file one frame at a time.
     @details 
+
+    @var path A string containing the location of the video file.
+    @var fps
+    @var frameCount
+    @var width
+    @var height
+    @var next
+    @var lastIndex
+    @var lastFrame
+    @var VIDEO_EXTENSIONS A list of file extensions treated as video (mp4, m4v, mov, avi, mkv, webm)
+    @var DEFAULT_FPS = 30. Used if the file reports no frame rate or an unusable one.
     """
 
     # ˅

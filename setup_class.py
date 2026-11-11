@@ -30,6 +30,14 @@ class SetupClass(object):
     @brief Reads and stores the values from the settings file, validating and providing access to them.
 
     @details 
+
+    @var projectorResXY A list of two integers The projector's resolution as width and height in pixels
+    @var imageWidthCm w The width of the image projected from one projector in cm.
+    @var projectorSpacing d The physical distance between each projector.
+    @var blendCurveGamma Gamma that shapes the fade in the overalp.
+    @var sourcePath A string containing the image-file path
+    @var projectorSide LEFT or RIGHT projector.
+    @var scaleMode crop (default) or fit. Explains how the source is fitted to the combined image: crop fills it and cuts the edges, fit shows the whole source with black bars.
     """
 
     # ˅
