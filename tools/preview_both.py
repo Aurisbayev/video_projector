@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Preview both projectors on one computer: run LEFT and RIGHT, join them, show the result.
+"""!
+@brief Preview both projectors on one computer: run LEFT and RIGHT, join them, show the result.
 
 python tools/preview_both.py settings.json [--save out.png] [--no-window] [--projector-gamma 2.2]
 

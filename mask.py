@@ -37,8 +37,6 @@ class Mask(object):
         @brief Initializes the Mask object with the supplied alpha.
 
         @param alpha [double], List of floating-point brightness multipliers (Between 0.0 and 1.0), one per horizontal pixel column.
-
-        @return None.
         """
 
         self.__alpha = None

@@ -448,15 +448,6 @@ class PipelineClass(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self, setup)
-    #  @brief Initializes the pipeline attributes. Builds the math object, the region and
-    #         the mask once.
-    #
-    #  @param setup A loaded SetupClass.
-    #  @throws ValueError If setup is missing or not loaded.
-    #  @throws ValueError If the settings give an overlap in pixels that is out of range, or
-    #          a side or gamma the mask cannot be built from.
-
     # ˄
 
 

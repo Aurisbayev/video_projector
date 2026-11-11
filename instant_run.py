@@ -60,8 +60,7 @@ def parseStartDelay(text):
     @brief Reads the value of --start-in.
 
     @param text The text after --start-in [s].
-    @return The delay [s].
-    @rtype float
+    @return [float] The delay [s].
     @throws argparse.ArgumentTypeError If the text is not a finite number, or is negative.
     """
     try:
@@ -77,8 +76,7 @@ def buildParser():
     """!
     @brief Creates the command-line parser.
 
-    @return The parser, with only the rules argparse can check by itself.
-    @rtype argparse.ArgumentParser
+    @return [argparse.ArgumentParser] The parser, with only the rules argparse can check by itself.
     """
     parser = argparse.ArgumentParser(
         description="Show the test video or picture on the projectors, or as a preview "
@@ -109,8 +107,7 @@ def parseArguments(argv, now):
 
     @param argv Command-line arguments list, or None for sys.argv [none].
     @param now Function giving the current time as a datetime [none].
-    @return The parsed options.
-    @rtype argparse.Namespace
+    @return [argparse.Namespace] The parsed options.
     @throws SystemExit With code 2 for a wrong option, and with code 0 for --help.
     """
     parser = buildParser()
@@ -140,8 +137,7 @@ def settingsFor(args):
     @brief Chooses the settings file.
 
     @param args The parsed options.
-    @return Settings file, relative to ROOT.
-    @rtype str
+    @return Settings file [string], relative to ROOT.
     """
     return IMAGE_SETTINGS if args.image else VIDEO_SETTINGS
 
@@ -152,8 +148,7 @@ def startTimeAfter(now, seconds):
 
     @param now The current time as a datetime [none].
     @param seconds The delay [s].
-    @return The time in START_TIME_FORMAT, which parseStartTime() accepts.
-    @rtype str
+    @return The time in START_TIME_FORMAT [string], which parseStartTime() accepts.
     @throws OverflowError If the time is too far ahead for a datetime.
     """
     target = now + datetime.timedelta(seconds=seconds)
@@ -168,8 +163,7 @@ def resolveStartTime(args, now):
 
     @param args The parsed options.
     @param now Function giving the current time as a datetime [none].
-    @return The start time text, or None for a preview, a picture or the GUI.
-    @rtype str
+    @return The start time text [string], or None for a preview, a picture or the GUI.
     """
     if not args.side or args.image:
         return None
@@ -185,8 +179,7 @@ def buildCommand(args, startTime=None):
 
     @param args The parsed options.
     @param startTime The start time from resolveStartTime(), or None [none].
-    @return The command, to run from ROOT.
-    @rtype list
+    @return The command [list], to run from ROOT.
     """
     settings = settingsFor(args)
     if args.gui:
@@ -207,8 +200,7 @@ def secondLaptopCommand(side, startTime, env=None):
     @param side The side of this laptop, "LEFT" or "RIGHT" [none].
     @param startTime The shared start time [none].
     @param env Environment variables, only given by tests. uv run sets UV [none].
-    @return The command, quoted for a shell.
-    @rtype str
+    @return The command [string], quoted for a shell.
     """
     env = os.environ if env is None else env
     python = ["uv", "run", "python"] if "UV" in env else ["python"]
@@ -223,8 +215,7 @@ def startMessage(side, startTime, env=None):
     @param side The side of this laptop, "LEFT" or "RIGHT" [none].
     @param startTime The shared start time [none].
     @param env Environment variables, only given by tests [none].
-    @return The text to print.
-    @rtype str
+    @return [string], The text to print.
     """
     return ("The video starts at %s.\n"
             "On the second laptop, in the repository folder, run:\n"
@@ -240,8 +231,7 @@ def tkinterAvailable():
 
     The import can work although the window later fails, so this does not promise a window.
 
-    @return True if the import works.
-    @rtype bool
+    @return [bool], True if the import works.
     """
     try:
         import tkinter  # noqa: F401
@@ -255,7 +245,7 @@ def removeFile(path):
     @brief Removes a file if it is there.
 
     @param path Path of the file.
-    @return None
+    @return None.
     """
     try:
         os.remove(path)
@@ -271,8 +261,7 @@ def ensureVideo(settingsFile, run):
 
     @param settingsFile Settings file, relative to ROOT.
     @param run Function that runs a command and gives its exit code [none].
-    @return True if the video is there now. False after printing the reason.
-    @rtype bool
+    @return [bool] True if the video is there now. False after printing the reason.
     @throws KeyboardInterrupt If Ctrl-C is pressed while the video is made.
     """
     setup = SetupClass()
@@ -307,8 +296,7 @@ def runCommand(command):
     stops the command. Otherwise main.py would print a traceback.
 
     @param command The command [none].
-    @return Its exit code. A program ended by a signal gives 128 + the signal number.
-    @rtype int
+    @return Its exit code [int]. A program ended by a signal gives 128 + the signal number.
     @throws KeyboardInterrupt If Ctrl-C is pressed.
     """
     code = subprocess.run(command, cwd=ROOT, start_new_session=True).returncode
@@ -325,8 +313,7 @@ def launch(args, run, now, hasTkinter):
     @param run Function that runs a command and gives its exit code [none].
     @param now Function giving the current time as a datetime [none].
     @param hasTkinter Function telling whether tkinter can be imported [none].
-    @return Exit code of the program, or EXIT_ERROR if it could not be started.
-    @rtype int
+    @return [int] Exit code of the program, or EXIT_ERROR if it could not be started.
     @throws KeyboardInterrupt If Ctrl-C is pressed.
     """
     if args.gui and not hasTkinter():
@@ -350,8 +337,7 @@ def main(argv=None, run=runCommand, now=datetime.datetime.now, hasTkinter=tkinte
     @param run Function that runs a command and gives its exit code. Tests give their own [none].
     @param now Function giving the current time as a datetime. Tests give their own [none].
     @param hasTkinter Function telling whether tkinter can be imported. Tests give their own [none].
-    @return Exit code, see the top of this file [none].
-    @rtype int
+    @return Exit code [int].
     @throws SystemExit With code 2 for a wrong option, and with code 0 for --help.
     """
     args = parseArguments(argv, now)

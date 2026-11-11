@@ -44,7 +44,7 @@ class Display(object):
         @brief Set's window's fullscreen state.
         @details Applies it immediately if a window exists. 
 
-        @param enabled [bool], True enables fullscreen; False enables normal window mode.\nDefaults to True.
+        @param enabled [bool], True enables fullscreen; False enables normal window mode.Defaults to True.
 
         @throws RuntimeError if the window has not been created yet.
         """
@@ -156,7 +156,7 @@ class Display(object):
         """!
         @brief Waits for a key press.
 
-        @param delayMS [in], The waiting time in milliseconds. If set to 0, waits indefinitely.
+        @param delayMS [int], The waiting time in milliseconds. If set to 0, waits indefinitely.
 
         @return The key code of the pressed key [int], or -1 if no key was pressed during the waiting time.
         """
@@ -291,8 +291,10 @@ class Display(object):
 
 
 # ˅
+
 def screenRects(cocoaFrames):
     """!
+    @package screenRects (display module function)
     @brief Converts macOS Cocoa monitor rectangles coordinates to top-left origin coordinates.
     
     @details Cocoa system uses a bottom-left origin. This function transforms it into the more common top-left origin coordinate system.
@@ -305,9 +307,9 @@ def screenRects(cocoaFrames):
     return [(int(x), int(primaryHeight - (y + height)), int(width), int(height))
             for x, y, width, height in cocoaFrames]
 
-
 def findProjectorScreens():
     """!
+    @package findProjectorScreens (display module function)
     @brief Detects connected monitors and selects the primary projector.
     @memberof Display
 
@@ -329,9 +331,10 @@ def findProjectorScreens():
         return None, 0
     rects = screenRects(frames)
     return rects, (1 if len(rects) > 1 else 0)
+
 # ˄
 
-
+#@cond
 # NOTE: everything below is a manual smoke test, NOT content generated from the
 # UML model. It lives outside the `# ˅` / `# ˄` markers on purpose and must stay
 # at the very end of the file.
@@ -404,3 +407,4 @@ if __name__ == "__main__":
     finally:
         display.close()
     print("closed")
+#@endcond

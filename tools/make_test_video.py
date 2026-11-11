@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Write a short test video: a grid with a bar that sweeps across the whole picture.
+"""!
+@brief Write a short test video: a grid with a bar that sweeps across the whole picture.
 
 python tools/make_test_video.py [out.mp4] [--seconds 8] [--fps 30] [--size 3456x1080]
 

@@ -1,21 +1,7 @@
 """!
+@package main
 @brief Main execution script for the projector application.
-
-Command-line options:
-python main.py settings.json [--side LEFT|RIGHT] [--scale-mode crop|fit] [--start-at TIME]
-
-Options:
-- settings: Path of the settings file.
-- --side: Overrides projectorSide. Not case sensitive.
-- --scale-mode: Overrides scaleMode. Not case sensitive.
-- --start-at TIME: Shared start time for a video, as HH:MM, HH:MM:SS, YYYY-MM-DD HH:MM or YYYY-MM-DD HH:MM:SS, local time. Same time on both computers. Both computers must have the right clock and the same time zone. For a picture the option is ignored and a warning is logged: "--start-at is ignored: the source is a picture, not a video". A time in the wrong form is a usage error.
-
-Exit codes:
-- 0: Normal end (the window was closed with q or Esc, or the picture window was closed with a key)
-- 1: The settings file, the picture or the video could not be read or opened (message names the problem)
-- 2: validate() returned False; or a wrong command-line option, including a wrong --start-at or --scale-mode
 """
-
 
 import argparse
 import logging
@@ -28,7 +14,7 @@ from video_source import parseStartTime
 
 _log = logging.getLogger(__name__)
 
-## Exit code 0: normal end.
+## Exit code 0: normal end (The window was closed with q or Esc, or the picture window was closed with a key).
 EXIT_OK = 0
 ## Exit code 1: the settings file, the picture or the video could not be read or opened.
 EXIT_ERROR = 1
@@ -40,11 +26,21 @@ def main(argv=None):
     """!
     @brief Runs the dual-projector program from command-line arguments.
 
-    @param argy Command-line arguments. If None, argparse reads sys.argy.
+    @details
+    \par Options:
 
-    @return Exit code 0 for normal completion.
-    @return Exit Code 1 if the settings or source picture cannot be read or the pipeline fail.
-    @return Exit code 2 if settings are unusabel or the command-line arguments are invalid.
+    Command-line options:
+    python main.py settings.json [--side LEFT|RIGHT] [--scale-mode crop|fit] [--start-at TIME]\n
+
+    settings: Path of the settings file.\n
+    --side: Overrides projectorSide. Not case sensitive.\n
+    --scale-mode: Overrides scaleMode. Not case sensitive.\n
+    --start-at TIME: Shared start time for a video, as HH:MM, HH:MM:SS, YYYY-MM-DD HH:MM or YYYY-MM-DD HH:MM:SS, local time. Same time on both computers.\n
+        Both computers must have the right clock and the same time zone. For a picture the option is ignored and a warning is logged: "--start-at is ignored: the source is a picture, not a video".\n
+        A time in the wrong form is a usage error.
+
+
+    @param argy Command-line arguments. If None, argparse reads sys.argy.
 
     @throws SystemExit argparse raises this for invalid command-line arguments.
     """

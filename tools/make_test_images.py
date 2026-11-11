@@ -1,4 +1,12 @@
+"""!
+@brief Generate four projector test images: a grid, horizontal gradient, plain white image, and alignment marks.
 
+python tools/generate_test_images.py settings.json
+
+The image dimensions and overlap are calculated from the projector settings.
+The generated images are saved in the test_images/ directory and can be
+used to check projector alignment, scaling, brightness, and blending.
+"""
 import argparse
 import sys
 from pathlib import Path

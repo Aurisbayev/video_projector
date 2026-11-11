@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Show the full-screen test pattern on the chosen screen (D-44)."""
 import argparse
 import os
 import sys
