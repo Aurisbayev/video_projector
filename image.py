@@ -10,21 +10,25 @@ import numpy as np
 
 class Image(object):
     """!
-    @brief Provides a wrapper around a NumPy array represnting an image or video frame Holds one image in memory.
+    @brief Stores and manages one image or video frame. 
 
-    @details Image is the Python object that stores and manages the frame. numpy.ndarray is the actual pixel data. This class wraps the OpenCV image (Numpy array, BGR, 8 bits).
+    @details The pixel data is held in a numpy.ndarray using OpenCV's colour-image
+    representation (BGR, 8 bits per channel). The Image object is a wrapper; the array is the actual pixel data.
+
+    \par Class Attributes:
+    frame [ndarray], Stored image pixel data as a numpy.ndarray, or None before an image is set.
     """
-
     # ˅
     
     # ˄
 
     def load(self, path):
         """!
-        @brief Reads the file at path as a color image and stores it inside the object.
+        @brief Reads a color image from a file and stores it pixel array.
 
-        @param path A string containing the image-file path.
-        @returns frame A NumPy array, stored inside the Image object.
+        @param path [string] Path to the image file.
+        @returns numpy.ndarray The loaded image frame, stored inside the Image object.
+
         @throws FileNotFoundError if there is no such file. 
         @throws ValueError if the path is empty or the file cannot be read as a picture.
         """
@@ -52,8 +56,8 @@ class Image(object):
 
     def getFrame(self):
         """!
-        @brief Retrieves the stored pixel array.
-        @returns frame if load() is successful, None if not.
+        @brief Returns the pixel array currently stored in this object.
+        @returns numpy.ndarray The stored frame, or None if no frame has been loaded or set.
         """
 
         # ˅
@@ -63,9 +67,9 @@ class Image(object):
 
     def getShape(self):
         """!
-        @brief Retrieves the array's dimensions.
-        @returns tuple (height, width, channels)
-        @throws ValueError if nothing is loaded
+        @brief Returns the dimensions of the stored pixel array.
+        @returns tuple Array's shape in the form (height, width, channels).
+        @throws ValueError if no frame is stored.
         """
 
         # ˅
@@ -77,7 +81,7 @@ class Image(object):
 
     def __init__(self):
         """!
-        @brief Initializes the object but contains no image initially.
+        @brief Initializes the Image object with no frame stored.
         """
 
         self.__frame = None
@@ -87,14 +91,14 @@ class Image(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self)
-    #  @brief Creates an Image that holds no picture until load() or setFrame() is called.
 
     def setFrame(self, frame):
         """!
-        @brief Stores a NumPy Array in the Image object without reading a file.
+        @brief Stores an existing NumPy array as this object's image frame.
+
         @details Used for the results of scaling, cropping and masking.
-        @param frame A NumPy array.
+
+        @param frame [ndarray] Image pixel data.
         @throws ValueError if frame is not a NumPy array.
         """
         

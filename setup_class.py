@@ -30,14 +30,14 @@ class SetupClass(object):
     @brief Reads and stores the values from the settings file, validating and providing access to them.
 
     @details 
-
-    @var projectorResXY A list of two integers The projector's resolution as width and height in pixels
-    @var imageWidthCm w The width of the image projected from one projector in cm.
-    @var projectorSpacing d The physical distance between each projector.
-    @var blendCurveGamma Gamma that shapes the fade in the overalp.
-    @var sourcePath A string containing the image-file path
-    @var projectorSide LEFT or RIGHT projector.
-    @var scaleMode crop (default) or fit. Explains how the source is fitted to the combined image: crop fills it and cuts the edges, fit shows the whole source with black bars.
+    \par Class Attributes: 
+    projectorResXY: A list of two integers, The projector's resolution as width and height in pixels\n
+    imageWidthCm: A double, the width of the image projected from one projector in cm.\n
+    projectorSpacing: A double, the physical distance between each projector.\n
+    blendCurveGamma: A double, Gamma that shapes the fade in the overlay.\n
+    sourcePath: A string containing the image-file path\n
+    projectorSide: LEFT or RIGHT projector.\n
+    scaleMode: A string, crop (default) or fit. Explains how the source is fitted to the combined image: crop fills it and cuts the edges, fit shows the whole source with black bars.
     """
 
     # ˅
@@ -153,7 +153,7 @@ class SetupClass(object):
         """!
         @brief Gives the projector resolution.
 
-        @returns ProjectResXY A list of two integers (resX, resY) in pixels.
+        @returns ProjectResXY.
         """
 
         # ˅
@@ -165,7 +165,7 @@ class SetupClass(object):
         """!
         @brief Gives the width of the projected image from one projector in cm.
 
-        @returns float imageWidthCm.
+        @returns imageWidthCm.
         """
 
         # ˅
@@ -177,7 +177,7 @@ class SetupClass(object):
         """!
         @brief Gives the distance between the two projectors in cm.
 
-        @returns float ProjectorSpacingCm.
+        @returns ProjectorSpacingCm.
         """
 
         # ˅
@@ -189,7 +189,7 @@ class SetupClass(object):
         """!
         @brief Gives the gamma that shapes blend curve.
 
-        @returns float BlendeCurveGamma.
+        @returns blendeCurveGamma.
         """
 
         # ˅
@@ -201,7 +201,7 @@ class SetupClass(object):
         """!
         @brief Gives the path of the source-image (the image to be projected).
 
-        @returns string SourcePath.
+        @returns sourcePath.
         """
 
         # ˅
@@ -213,7 +213,7 @@ class SetupClass(object):
         """!
         @brief Gives which projector this computer drives.
 
-        @returns Side projectorSide.
+        @returns projectorSide.
         """
 
         # ˅
@@ -227,7 +227,7 @@ class SetupClass(object):
 
         @details Has it been cropped or fitted?
 
-        @returns string the value of scaleMode: crop or fit.
+        @returns The value of scaleMode: crop or fit.
         """
 
         # ˅
@@ -256,9 +256,6 @@ class SetupClass(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self)
-    #  @brief Creates an empty setup: scaleMode is crop and every other setting is None
-    #         until load().
 
     @staticmethod
     def __isPositiveNumber(value):
@@ -308,9 +305,7 @@ class SetupClass(object):
     def setScaleMode(self, mode):
         """!
         @brief Replaces scaleMode.
-        @details
-        @param mode crop or fit.
-        @return 
+        @param crop or fit.
         @throws ValueError if mode is anything else.
         """
 
@@ -321,7 +316,7 @@ class SetupClass(object):
         """!
         @brief Replaces the side loaded from the settings file.
 
-        @param side Side.LEFT or Side.RIGHT.
+        @param Side.LEFT or Side.RIGHT.
 
         @throws ValueError if side is not a Side.
         """

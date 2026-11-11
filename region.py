@@ -9,8 +9,10 @@ class Region(object):
     """!
     @brief Represents a horizontal section of the combined image that a particular that this projector shows. 
 
-    @var xStartPx Starting horizontal pixel position.
-    @var widthPx Width of the region in pixels.
+    @details
+    \par Class Attributes:
+    xStartPx Starting horizontal pixel position.\n
+    widthPx Width of the region in pixels.
 
     @details
     """
@@ -62,12 +64,6 @@ class Region(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self, xStartPx, widthPx)
-    #  @brief Initializes the Region instance.
-    #
-    #  @param xStartPx First column [px].
-    #  @param widthPx Number of columns [px].
-
     # ˄
 
 

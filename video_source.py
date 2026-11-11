@@ -15,16 +15,15 @@ class VideoSource(object):
     @brief Reads a video file one frame at a time.
     @details 
 
-    @var path A string containing the location of the video file.
-    @var fps
-    @var frameCount
-    @var width
-    @var height
-    @var next
-    @var lastIndex
-    @var lastFrame
-    @var VIDEO_EXTENSIONS A list of file extensions treated as video (mp4, m4v, mov, avi, mkv, webm)
-    @var DEFAULT_FPS = 30. Used if the file reports no frame rate or an unusable one.
+    \par Class Attributes:
+    path A string containing the location of the video file.
+    fps
+    frameCount
+    width
+    height
+    next
+    lastIndex
+    lastFrame
     """
 
     # ˅
@@ -53,7 +52,7 @@ class VideoSource(object):
     def getFps(self):
         """!
         @brief Gives the frame rate of the video.
-        @return float fps 
+        @return fps 
         """
 
         # ˅
@@ -64,7 +63,7 @@ class VideoSource(object):
     def getFrameCount(self):
         """!
         @brief Gives the number of frames in the video.
-        @return integer The total number of frames.
+        @return frameCount.
         """
 
         # ˅
@@ -75,7 +74,7 @@ class VideoSource(object):
     def getShape(self):
         """!
         @brief Gives the size of one frame of the video.
-        @return Shape tuple (height, width, 3)
+        @return Shape.
         """
 
         # ˅
@@ -88,7 +87,7 @@ class VideoSource(object):
         @brief Retrieves a specific frame from the video.
         @details Uses internal attributes to keep track of which frame has already been read.
         @param index, the frame number, starting from zero.
-        @return frame NumPy array containing the video frame.
+        @return frame, a NumPy array containing the video frame.
         """
 
         # ˅
@@ -182,16 +181,6 @@ class VideoSource(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self, path)
-    #  @brief Opens a video file and reads its frame rate, frame count and frame size.
-    #
-    #  If the file reports no usable frame rate, DEFAULT_FPS is used.
-    #
-    #  @param path Path of the video file.
-    #  @throws ValueError If path is empty or not text.
-    #  @throws FileNotFoundError If the file does not exist.
-    #  @throws ValueError If the file is corrupt or OpenCV does not support its codec.
-    #  @throws ValueError If the number of frames cannot be found.
 
     # ˄
 
@@ -204,8 +193,8 @@ def parseStartTime(text, now=None):
     """!
     @brief Converts a human-readable start time into a Unix timestamp.
 
+    @details Optional datetime used mainly for testing. If omitted, the current local date and time are used.
     @param A time string.
-    @now Optional datetime used mainly for testing. If omitted, the current local date and time are used.
     """
     
     if not isinstance(text, str):

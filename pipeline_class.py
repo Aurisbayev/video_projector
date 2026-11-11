@@ -23,16 +23,16 @@ class PipelineClass(object):
     """!
     @brief Processes an image or video for projection.
 
-    @details Loads thes ource, sclaes it, crops the region for this projector, applies a blending mask, and displays the result. A video goes through the same steps for every frame. 
+    @details Loads the source, scales it, crops the region for this projector, applies a blending mask, and displays the result. A video goes through the same steps for every frame. 
 
-    @var setup The settings, of type SetupClass
-    @var math The class used for calculations, of type MathClass
-    @var sourceFrame the image being processes, of type Image. After load(), it is the original. After scaleSource(), it is the combined image.
-    @var mask The blend mask for this side, built once in the constructor, of type Mask
-    @var output The image last shown, of type Image.
-    @var startAt double
-    @var region Region
-    @var QUIT_KEYS int[]
+    \par Class Attributes:
+    setup [SetupClass], Contains the information from the settings file.\n
+    math [MathClass], The class used for calculations.\n
+    sourceFrame [Image], Holds the source image (after load()) and later the scaled combined frame (after scaleSource()). \n 
+    mask [Mask], Contains this projector's per-column brightness multipliers. Built once in the constructor. \n
+    output [Image], Contains the most recently displayed/processed output frame.\n
+    startAt [double], Optional shared video start time as seconds.\n
+    region [Region], Contains the horizontal crop for this projector. \n
     """
 
     # ˅
@@ -44,9 +44,9 @@ class PipelineClass(object):
 
     def load(self):
         """!
-        @brief Loads the source image using the path in the settings.
+        @brief Loads the source image into an Image object.
 
-        @returns The loaded Image object
+        @returns [Image] The loaded Image object.
 
         @throws FileNotFoundError if the path is wrong. 
         @throws ValueError if the file is not a readable picture.
@@ -64,10 +64,10 @@ class PipelineClass(object):
 
     def crop(self):
         """!
-        @brief Extracts the portion of the combined image that belongs to this projector. 
-        @details The size is resX x resY
+        @brief Extracts this projector's region from the scaled, combined image.
+        @details The crop's size is resX x resY
 
-        @returns Image sliceFrame Image slice for this projector. It is a copy, so applyMask() cannot change the source frame.
+        @returns [Image] A new Image containing this projector's cropped region. It is a copy, so applyMask() cannot change the source frame.
 
         @throws ValueError if there is no source or the region does not fit.
         """
@@ -106,14 +106,17 @@ class PipelineClass(object):
 
     def applyMask(self, sliceFrame):
         """!
-        @brief Applies the blending mask to the cropped image/frame.
-        @details Only the columns of the mask fades are calculated; columns with alpha 1 are copied. 
+        @brief Applies the projector's blending mask to the cropped frame.
 
-        @param sliceFrame The cropped portion of the frame to be masked.
+        @details The mask supplies one alpha per horiztonal column. 
+        Columns with alpha 1.0 are copied unchanged, the other columns are multiplied by alpha. 
+        The input image is not modified.
 
-        @returns Image (a new picture; the input is not changed).
+        @param sliceFrame [Image], This projector's cropped frame.
 
-        @throws ValueError if there is no mask or the slice width does not match the mask length..
+        @returns Image (a new picture; the input is not modified).
+
+        @throws ValueError if there is no mask or the frame width differs from the mask length.
         """
 
         # ˅
@@ -141,10 +144,14 @@ class PipelineClass(object):
 
     def display(self, frame):
         """!
-        @brief Opens a window on the selected monitor and displays the processed image.
-        @details The screens can only be read on macOS. Elsewhere the system places the window (see findProjectorScreens()).
+        @brief Displays the processed Image from applyMask() on the selected monitor.
 
-        @param frame, an Image object containing the final image.
+        @details Detects connected monitors and retrieves their positions and
+        dimensions on mac)S. On other systems, the operating
+        system determines the window position. 
+        (See display.py findProjectorScreens()).
+
+        @param frame [Image] Object containing the final image with the mask.
 
         @throws ValueError if frame is not an Image or is empty.
         """
@@ -176,13 +183,14 @@ class PipelineClass(object):
     def run(self):
         """!
         @brief Executes the pipeline processing.
-        @details A picture is loaded, scaled, cropped, masked and displayeyd. Each computer shows one side.
 
-        If isVideo() is true, it calls playVideo() and ends; otherwise it runs the picture steps.
+        @details For a still image, loads, scales, crops, masks and displays. 
+        For a video, calls playVideo().
 
+        @return None.
 
         @throws FileNotFoundError If the source file does not exist.
-        @throws ValueError If the source cannot be read, or a step fails.
+        @throws ValueError If the source cannot be read or a step fails.
         """
 
         # ˅
@@ -202,7 +210,7 @@ class PipelineClass(object):
         @brief Checks if the source path has a video extension.
         @details Only the file extension is checked (see VideoSource.isVideoPath()).
 
-        @return bool True if sourcePath has a video extension, False otherwise [none].
+        @return [bool] True if sourcePath has a video extension, False otherwise [none].
         """
 
         # ˅
@@ -212,13 +220,13 @@ class PipelineClass(object):
 
     def setStartAt(self, startAt):
         """!
-        @brief Sets the shared start time or clears it with None.
+        @brief Sets or clears the shared start time.
 
-        Both computers must be given the same value.
+        @details Both computers must be given the same value, so their video frames are synchronized.
 
-        @param startAt shared start time as seconds since 1970 (like time.time()) [s], or None to start with a key press.
-        @return None
-        @rtype None
+        @param startAt [double], shared start time as seconds since Unix epoch or None to wait for a key press before playback.
+        @return None.
+
         @throws ValueError If the value is not a finite number or None, including True, False and text such as "14:30" (convert text with parseStartTime() first).
         """
 
@@ -232,21 +240,18 @@ class PipelineClass(object):
 
     def playVideo(self, clock=None):
         """!
-        @brief Plays the video frame by frame synchronized with the shared start time or a key press.
+        @brief Plays the video, frame by frame, synchronized with the shared start time or a key press.
 
         @details The frame comes from the clock, so frames are skipped if processing takes too long. At the end of the video, the frame number wraps around and the video loops.
 
-        The first frame is shown while waiting for the start: the shared time from setStartAt(), or otherwise a key press. 
-        Esc or q during the wait stops without playing, and Esc or q stops the video. 
-        The window and the video file are closed when playing stops, also after an error.
+        The first frame is shown while waiting to start. With a shared start time, the frame index is calculated from the clock, 
+        so a computer joining late can display the frame corresponding to the shared time. Processing delays cause
+        frames to be skipped rather than allowing playback to fall behind. Playback loops at the end of the video. 
+        The display window and video capture are closed when playback ends or an error occurs.
 
-        With a shared start time, a computer started after that time joins at the frame that belongs to that moment, so two computers with the same clock show the same frame. The last processed frame is kept in output.
-
-        @param clock Function giving the time in seconds [s]. The default is the wall clock (time.time) when a shared start time is set, otherwise a steady clock (time.monotonic). Tests give their own.
-
-        @throws ValueError If processing steps encounter invalid values.
-        @throws FileNotFoundError If the video file does not exist.
-        @throws ValueError If the video cannot be opened or a frame cannot be read.
+        @param clock [function] Optional function giving the time in seconds. Defaults to the wall clock (time.time) when a shared start time is set, otherwise a steady clock (time.monotonic). When testing, supply own clock function.
+        
+        @return None.
         """
 
         # ˅
@@ -292,15 +297,17 @@ class PipelineClass(object):
 
     def scaleSource(self):
         """!
-        @brief Scales the source image or video frame to combined image size using crop or fit modees.
+        @brief Scales the source frame to combined image dimensions using either crop or fit modes.
 
-        @details The result is always , 2 * resX - overlapPx by resY. 
+        @details The combined image dimensions are (2 * resX - overlapPx) by resY. 
+        
         Both modes keep the proportions without stretching.
-        "crop" cuts the extra edges and keeps the center.
-        "fit" shows the whole picture in the centre with black bars. 
+        In crop mode, the image fills the target and extra edges are removed.
+        In fit mode, the complete image is fitten inside the targe, and unused areas are filled with black.
         It writes an INFO message when the aspect ratios differ, once per source size and mode.
+        The scaled result replaced sourceFrame.
 
-        @returns the scaled Image (which replaces the source frame).
+        @returns [Image] the scaled combined image.
 
         @throws ValueError if load() was not called.
         """
@@ -355,12 +362,13 @@ class PipelineClass(object):
 
     def processFrame(self, array, masked=True):
         """!
-        @brief Processes one video frame through scale, crop, and mask to produce this side's picture.
-        @details The frame replaces the source frame.
+        @brief Processes one video frame for this projector. 
+        
+        @details The supplied array replaces the source frame. Then, scales, crops and optionally applies the blending masks it.
 
-        @param array One video frame (numpy array) [none].
-        @param masked True applies the mask, False leaves it out, to compare with and without the blend [none].
-        @return Image The processed frame as an Image object [none]
+        @param array [ndarray] Video frame pixel data.
+        @param masked [bool] If True, applies the mask; if False, return the unmasked crop.
+        @return [Image] The processed frame wrapped in an Image object
         @throws ValueError If array is not a NumPy array, or scaling, cropping or masking fails.
         """
 
@@ -377,13 +385,13 @@ class PipelineClass(object):
     @staticmethod
     def __isQuitKey(key):
         """!
-        @brief Checks if the provided key code corresponds to a quit action.
+        @brief Checks whether an OpenCV key code requests playback to stop.
 
         @details True if the key code (low 8 bits) is in QUIT_KEYS; False for -1 (no key).
         Only the low 8 bits are compared, because some backends add modifier bits.
 
-        @param key The key code to check [none]
-        @return bool True if it is a quit key, False otherwise
+        @param key [int] The key code to check.
+        @return [bool] True for a quit key (q or Esc); otherwise False.
         """
 
         # ˅

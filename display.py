@@ -5,12 +5,19 @@ import cv2
 import numpy as np
 # ˄
 
-
 class Display(object):
     """!
-    @brief Manages window used to display the processed image or video on the selected monitor. 
+    @brief Manages a window used to display the processed image or video on a selected monitor. 
 
-    @details Optionally full-screen on a chosen monitor.
+    @details The window can be moved to a configured monitor and displayed in normal or fullscreen mode.
+    \par Class Attributes:
+    windowName [string], Name of the window.\n
+    screens [integer], List of target monitors as (x, y, width height) in pixels.\n
+    screen [integer], Index of the selected monitor, 0 is the primary monitor.\n
+    fullscreen [boolean], Whether fullscreen mode is enabled.\n
+    windowOpen [boolean], Whether the window has been created.\n
+    placedScreen [int], Index of the monitor on which the window was most recently placed.
+
     """
 
     # ˅
@@ -19,10 +26,10 @@ class Display(object):
 
     def setScreen(self, index):
         """!
-        @brief Chooses the monitor to use. 
-        @details The method does not move the window immediately. The new monitor is used when show() is called.
+        @brief Selects which monitor should display the window. 
+        @details The method does not immediately move the window to the selected monitor. That is only done when show() is called.
 
-        @param index the monitor number to use.
+        @param index [int], Index of the target monitor in screens.
 
         @throws IndexError if screens is not set or the index is out of range.
         """
@@ -34,12 +41,12 @@ class Display(object):
 
     def setFullscreen(self, enabled=True):
         """!
-        @brief Sets the desired fullscreen state.
-        @details Applies it immediately if a window exists.
+        @brief Set's window's fullscreen state.
+        @details Applies it immediately if a window exists. 
 
-        @param bool enabled (True for fullscreen, False for a normal window).
+        @param enabled [bool], True enables fullscreen; False enables normal window mode.\nDefaults to True.
 
-        @throws IndexError if screens is not set or the index is out of range.
+        @throws RuntimeError if the window has not been created yet.
         """
 
         # ˅
@@ -59,9 +66,9 @@ class Display(object):
 
     def isFullscreen(self):
         """!
-        @brief Tests whether the full-screen is wanted.
+        @brief Returns whether fullscreen mode is enabled.
 
-        @returns bool True or False
+        @returns [bool], True when fullscreen mode is enabled; otherwise False.
         """
 
         # ˅
@@ -72,13 +79,13 @@ class Display(object):
     @staticmethod
     def buildTestImage(width=1280, height=720):
         """!
-        @brief Builds a test image (frame) for checking a projector
-        @details test image has (BGR) color bars, a checker pattern and text.
+        @brief Creates a test image for checking a projector.
+        @details The frame has (BGR) color bars, a checker pattern and text.
 
-        @param width of the frame in pixels
-        @param height of the frame in pixels
+        @param width [int], Width of the frame in pixels.
+        @param height [int], Height of the frame in pixels.
 
-        @returns frame Numpy array
+        @returns frame [ndarray], Test image with shape (height, width, 3) and uint8 pixels.
         """
 
         # ˅
@@ -110,13 +117,13 @@ class Display(object):
 
     def show(self, frame):
         """!
-        @brief Displays the image in the window. 
+        @brief Displays an image in the window. 
 
         @details The first call creates the window and moves it to the chosen monitor.
 
-        @param frame a NumpyArray containing the image to display.
+        @param frame [ndarray], Contains the image to display.
 
-        @throws ValueError if frame is not a NumPy array.
+        @throws ValueError If frame is not a NumPy array.
         """
 
         # ˅
@@ -147,11 +154,11 @@ class Display(object):
 
     def waitKey(self, delayMs=0):
         """!
-        @brief Waits for a key press
+        @brief Waits for a key press.
 
-        @param delayMS wait time in ms. 0 waits without limit.
+        @param delayMS [in], The waiting time in milliseconds. If set to 0, waits indefinitely.
 
-        @returns key code or -1 if none
+        @return The key code of the pressed key [int], or -1 if no key was pressed during the waiting time.
         """
 
         # ˅
@@ -162,8 +169,8 @@ class Display(object):
     def close(self):
         """!
         @brief Closes the window. 
+        @return None.
         """
-
         # ˅
         
         if not self.__windowOpen:
@@ -174,15 +181,11 @@ class Display(object):
 
     def __init__(self, windowName="projector", screens=None, screen=0):
         """!
-        @brief Opens a window to show an image, 
+        @brief Initializes the display settings without opening a window. 
 
-        @details Optionally full-screen on a chosen monitor.
-
-        @param windowName Name of the window/ Default is "projector"
-
-        @param screens Optional list of monitors, each (x, y, width, height) in pixels. If set to None, the system places the window
-
-        @param screen index of the selected monitor. 0 is the primary monitor
+        @param windowName [string], Name of the window.\n
+        @param screens [integer], List of target monitors as (x, y, width height) in pixels. If None, the system places the window.
+        @param screen [integer], Index of the selected monitor, 0 is the primary monitor.
 
         @throws ValueError if windowName is empty, if screens is not a list of 4-number tuples with positive width and height, or if screen is not an integer. 
         @throws IndexError if screen does not exist in screens.
@@ -215,19 +218,6 @@ class Display(object):
         # ˄
 
     # ˅
-    ## @fn __init__(self, windowName="projector", screens=None, screen=0)
-    #  @brief Checks and stores the window settings. The first show() creates the window.
-    #
-    #  @param windowName Name of the window, a non-empty string.
-    #  @param screens Target monitors as a list of (x, y, width, height) in logical pixels.
-    #         None or an empty list leaves the window placement to the system.
-    #  @param screen Position in screens of the monitor to use, counted from 0. Without
-    #         screens the number is kept, and only its type is checked.
-    #  @throws ValueError If windowName is empty or not text.
-    #  @throws ValueError If screens is not a list of (x, y, width, height) integers, or a
-    #          width or height is not greater than 0.
-    #  @throws ValueError If screen is not an integer.
-    #  @throws IndexError If screens is configured and screen is out of range.
 
     @staticmethod
     def __windowMode(enabled):
@@ -303,12 +293,12 @@ class Display(object):
 # ˅
 def screenRects(cocoaFrames):
     """!
-    @brief Converts macOS monitor coordinates into coordinates whose origin is at the top-left.
+    @brief Converts macOS Cocoa monitor rectangles coordinates to top-left origin coordinates.
     
-    @details The native macOS Cocoa system has the origin at the bottom left. This function transforms it into the more common coordinate system where the origin is at the top left.
+    @details Cocoa system uses a bottom-left origin. This function transforms it into the more common top-left origin coordinate system.
     
-    @param screens a list (x, y, width, height). The first is the primary monitor.
-    @returns screens a list of (x, y, width, height). 
+    @param cocoaFrames List of monitor rectangles as (x, y, width, height). The first is the primary monitor.
+    @returns screens List of (x, y, width, height) rectangles with a top-left origin. 
     """
 
     primaryHeight = cocoaFrames[0][3]
@@ -319,6 +309,7 @@ def screenRects(cocoaFrames):
 def findProjectorScreens():
     """!
     @brief Detects connected monitors and selects the primary projector.
+    @memberof Display
 
     @details The projector is the first non-primary monitor. 
     With one monitor, or if the monitors cannot be read, it uses the primary one.
