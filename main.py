@@ -27,7 +27,7 @@ def main(argv=None):
     @brief Runs the dual-projector program from command-line arguments.
 
     @details
-    \par Options:
+    @par Options:
 
     Command-line options:
     python main.py settings.json [--side LEFT|RIGHT] [--scale-mode crop|fit] [--start-at TIME]\n

@@ -34,7 +34,7 @@ class SetupClass(object):
     source path, and projector side. The optional scaleMode setting defaults to
     "crop"; supported modes are "crop" and "fit".
 
-    \par Class Attributes: 
+    @par Class Attributes: 
     projectorResXY: [int] Projection resolution as a list in the form (horizontal width, vertical height), in pixels.\n
     imageWidthCm: [double], Physical width of the image projected by one projector in cm.\n
     projectorSpacing: [double], Physical distance between the two projectors.\n

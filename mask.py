@@ -12,7 +12,7 @@ class Mask(object):
     @details Each alpha value controls the brightness for one horizontal pixel column. 
     Values range from 0.0 (black) to 1.0 (unchanged brightness). The values are used to blend the overlapping areas of the two projected images.
     
-    \par Class Attributes:
+    @par Class Attributes:
     alpha [double] List of floating-point brightness multipliers (Between 0.0 and 1.0), one per horizontal pixel column.
     """
 

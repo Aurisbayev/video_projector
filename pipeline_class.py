@@ -25,7 +25,7 @@ class PipelineClass(object):
 
     @details Loads the source, scales it, crops the region for this projector, applies a blending mask, and displays the result. A video goes through the same steps for every frame. 
 
-    \par Class Attributes:
+    @par Class Attributes:
     setup [SetupClass], Contains the information from the settings file.\n
     math [MathClass], The class used for calculations.\n
     sourceFrame [Image], Holds the source image (after load()) and later the scaled combined frame (after scaleSource()). \n 

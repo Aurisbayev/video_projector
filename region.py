@@ -10,7 +10,7 @@ class Region(object):
     @brief Represents the horizontal pixel region of the combined image showned by one projector. 
 
     @details
-    \par Class Attributes:
+    @par Class Attributes:
     xStartPx [int], First horizontal pixel column in the region.\n
     widthPx [int], Number of horizontal pixel columns in the region.
     """

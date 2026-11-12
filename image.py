@@ -15,7 +15,7 @@ class Image(object):
     @details The pixel data is held in a numpy.ndarray using OpenCV's colour-image
     representation (BGR, 8 bits per channel). The Image object is a wrapper; the array is the actual pixel data.
 
-    \par Class Attributes:
+    @par Class Attributes:
     frame [ndarray], Stored image pixel data as a numpy.ndarray, or None before an image is set.
     """
     # ˅

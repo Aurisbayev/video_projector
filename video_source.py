@@ -15,7 +15,7 @@ class VideoSource(object):
     @brief Opens a video file and provides access to its frames by index.
     @details 
 
-    \par Class Attributes:
+    @par Class Attributes:
     path [string] Path to the video file.
     fps [double] Video frame rate in frames per second.
     frameCount [int] Total number of frames in the video.

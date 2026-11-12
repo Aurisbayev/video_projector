@@ -10,7 +10,7 @@ class Display(object):
     @brief Manages a window used to display the processed image or video on a selected monitor. 
 
     @details The window can be moved to a configured monitor and displayed in normal or fullscreen mode.
-    \par Class Attributes:
+    @par Class Attributes:
     windowName [string], Name of the window.\n
     screens [integer], List of target monitors as (x, y, width height) in pixels.\n
     screen [integer], Index of the selected monitor, 0 is the primary monitor.\n
