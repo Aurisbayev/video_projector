@@ -189,7 +189,7 @@ RECURSIVE              = YES
 EXCLUDE                = ./tests \
                          .venv \
                          .herd \   
-                         README.md
+                         README.md 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        =

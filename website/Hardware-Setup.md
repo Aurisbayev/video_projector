@@ -20,15 +20,15 @@ Other projector models and operating systems may work, but their resolution and 
 
 \image html system-dimensions.svg "Projector and screen dimensions" width=700px
 
-Place the projectors side by side, at the same height and at the same distance from the screen. Aim them so that their projected images overlap in the centre. Avoid keystone correction where possible; physically align the projectors and use matching zoom settings to keep the image geometry consistent.
+Place the projectors side by side, at the same height and at the same distance from the screen. Aim them so that their projected images overlap in the center. Avoid keystone correction where possible; physically align the projectors and use matching zoom settings to keep the image geometry consistent.
 
 The geometry model uses these measurements:
 
 - **`w` — projection width:** the width, in centimetres, covered on the screen by one projector.
-- **`d` — projector spacing:** the distance, in centimetres, between the centres of the two projected images.
+- **`d` — projector spacing:** the distance, in centimetres, between the centers of the two projected images.
 - **Overlap:** the shared illuminated width, calculated as `w - d`.
 
-Measure `w` by displaying an image from one projector at a time. Measure `d` between the centres of the two projected images, using the same reference points for both. Record the measurements in centimetres.
+Measure `w` by displaying an image from one projector at a time. Measure `d` between the centers of the two projected images, using the same reference points for both. Record the measurements in centimetres.
 
 The two images should have equal width and height. Adjust projector position and zoom until the overlap matches `w - d` and the top and bottom edges line up.
 

@@ -15,7 +15,7 @@ To run the application, download or clone the repository and follow @ref softwar
 
 The HTML documentation describes the system design, classes, methods, and source files.
 
-- [Open the Doxygen API documentation](@ref mainpage)
+Click on Classes in the header bar to view.
 
 The HTML pages are generated from the documentation comments and Markdown files in the repository. The generated website output is not stored in the source repository (You can find it in ./website).
 

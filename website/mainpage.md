@@ -1,6 +1,6 @@
 # Dual-Projector Projection System {#mainpage}
 
-The **Dual-Projector Projection System** uses two computers and two projectors to show one continuous picture or video across a screen. Each computer renders one side of the same combined image. The projected images overlap in the centre, where brightness masks reduce the contribution from each projector to create a smoother join.
+The **Dual-Projector Projection System** uses two computers and two projectors to show one continuous picture or video across a screen. Each computer renders one side of the same combined image. The projected images overlap in the center, where brightness masks reduce the contribution from each projector to create a smoother join.
 
 This documentation covers the physical arrangement, software installation, configuration, operation, and the Python API.
 
@@ -21,7 +21,7 @@ The computers must use matching geometry and source settings. Their `projectorSi
 | Term | Meaning |
 |---|---|
 | `w` | Width in centimetres covered by one projector on the screen. |
-| `d` | Distance in centimetres between the two projector image centres, as used by the geometry model. |
+| `d` | Distance in centimetres between the two projectors. |
 | Overlap | Screen area illuminated by both projectors; its width is `w - d`. |
 | `overlapPx` | Overlap width in pixels in the combined image. |
 | `Region` | A horizontal image slice, described by its starting x-coordinate and width. |
@@ -36,7 +36,7 @@ The `blendCurveGamma` setting is not the same as a projector's physical gamma re
 
 ## Projector geometry
 
-The two projectors are positioned side by side. Each covers a width `w`; the distance between their image centres is `d`. The geometry calculations use these measurements and the projector resolution to determine the overlap in pixels and the region shown by each side.
+The two projectors are positioned side by side. Each covers a width `w`; the distance between them is `d`. The geometry calculations use these measurements and the projector resolution to determine the overlap in pixels and the region shown by each side.
 
 The illustration below shows the combined image and its left, overlap, and right portions.
 

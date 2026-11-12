@@ -65,7 +65,7 @@ Edit the settings on both computers so that the geometry, source path, blend set
 |---|---|
 | `projectorResXY` | Projector's native resolution as `[width, height]` in pixels. |
 | `imageWidthCm` | Width `w` covered by one projected image, in centimetres. |
-| `projectorSpacingCm` | Distance `d` between the projected-image centres, in centimetres. |
+| `projectorSpacingCm` | Distance `d` between the projectors, in centimetres. |
 | `blendCurveGamma` | Controls the shape of the brightness fade in the overlap. |
 | `sourcePath` | Path to the picture or video to display. |
 | `projectorSide` | `LEFT` or `RIGHT`, identifying this computer's projector. |

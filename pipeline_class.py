@@ -65,7 +65,7 @@ class PipelineClass(object):
     def crop(self):
         """!
         @brief Extracts this projector's region from the scaled, combined image.
-        @details The crop's size is resX x resY
+        @details The crop's size is resX x resY.
 
         @returns [Image] A new Image containing this projector's cropped region. It is a copy, so applyMask() cannot change the source frame.
 
@@ -403,7 +403,7 @@ class PipelineClass(object):
         """!
         @brief Stores settigs and builds the math object, region and mask once.
 
-        @param setup a loaded SetupClass
+        @param setup a loaded SetupClass.
 
         @throws ValueError if setup is missing or isn't loaded.
         """
@@ -422,11 +422,6 @@ class PipelineClass(object):
         self.__startAt = None
 
         # ˅
-        # Not in the diagram: the last source size the crop/fit notice was written for.
-        ## @var __loggedCrop
-        #  @brief The last source size the crop or fit notice was written for.
-        #
-        #  It remembers the source size for which the "cropped" or "black bars" message was written so it is only written once.
         self.__loggedCrop = None
         if setup is None or setup.getProjectorResXY() is None:
             raise ValueError("setup must be a loaded SetupClass: call load() and validate() first")
@@ -436,10 +431,6 @@ class PipelineClass(object):
         w = setup.getImageWidthCm()
         d = setup.getProjectorSpacingCm()
         side = setup.getProjectorSide()
-        ## @var __region
-        #  @brief The strip of the combined image of this computer's side.
-        #
-        #  It is built once in the constructor.
         self.__region = self.__math.cropRegion(side, resX, w, d)
         overlapPx = self.__math.overlapPx(resX, w, d)
         self.__mask = self.__math.blendMask(overlapPx, resX, side, setup.getBlendCurveGamma())

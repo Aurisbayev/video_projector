@@ -19,7 +19,7 @@ Physical width of overlap = w - d
 
 The software converts this measurement into pixels using the projector resolution. It then treats the source as one combined image, wide enough to cover both projectors and their overlap.
 
-Each computer selects its own horizontal slice from that combined image. The left slice covers the left side and part of the centre; the right slice covers part of the centre and the right side. The centre portion is therefore displayed by both projectors.
+Each computer selects its own horizontal slice from that combined image. The left slice covers the left side and part of the center; the right slice covers part of the center and the right side. The center portion is therefore displayed by both projectors.
 
 ## How the fade works
 
@@ -47,7 +47,7 @@ Because both computers use the same source, dimensions, measurements, and blend 
 
 ## Physical setup matters
 
-The software can blend the overlap, but it cannot correct every physical alignment problem. The projectors should be at the same height and distance from the screen, use matching zoom settings, and produce images with aligned top and bottom edges. Measure the projected width and the distance between image centres accurately.
+The software can blend the overlap, but it cannot correct every physical alignment problem. The projectors should be at the same height and distance from the screen, use matching zoom settings, and produce images with aligned top and bottom edges. Measure the projected width and the distance between image centers accurately.
 
 For equipment, connections, measurements, and alignment checks, see @ref hardware_setup "Hardware setup". For installing and running the program, see @ref software_usage "Software usage".
 
