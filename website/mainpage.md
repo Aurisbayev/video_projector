@@ -4,6 +4,8 @@ The **Dual-Projector Projection System** uses two computers and two projectors t
 
 This documentation covers the physical arrangement, software installation, configuration, operation, and the Python API.
 
+For a step-by-step explanation of the two projectors, their shared image area, and the brightness fade, see @ref dual_projector_system "How a dual-projector system works".
+
 ## How the system works
 
 1. Both computers load the same source picture or video and compatible projection settings.
@@ -34,7 +36,7 @@ The `blendCurveGamma` setting is not the same as a projector's physical gamma re
 
 ## Projector geometry
 
-The two projectors are positioned side by side. Each covers a width `w`; the distance between the two projectors is `d`. The geometry calculations use these measurements and the projector resolution to determine the overlap in pixels and the region shown by each side.
+The two projectors are positioned side by side. Each covers a width `w`; the distance between their image centres is `d`. The geometry calculations use these measurements and the projector resolution to determine the overlap in pixels and the region shown by each side.
 
 The illustration below shows the combined image and its left, overlap, and right portions.
 
