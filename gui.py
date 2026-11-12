@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Test GUI: edit the settings, see both projectors joined (picture or video), start the real show.
+"""
+@package gui Provides a graphical interface for configuring and previewing the system.
+
+Test GUI: edit the settings, see both projectors joined (picture or video), start the real show.
 
 python gui.py [settings.json]
 
