@@ -28,7 +28,7 @@ class MathClass(object):
         """!
         @brief Calculates the physical width of the overlapped region.
 
-        @details Width of the overlapped region \f(= w - d\f). 
+        @details Width of the overlapped region = w - d. 
 
         @param w [double], Width of the image projected from one projector, in cm.
         @param d [double], Distance between the two projectors, in cm.
@@ -46,7 +46,7 @@ class MathClass(object):
         """!
         @brief Calculates the physical width of the combined projected image .
 
-        @details The combined width is \f(= w + d\f). 
+        @details The combined width is = w + d. 
 
         @param w [double], Width of the image projected from one projector, in cm.
         @param d [double], Distance between the two projectors, in cm.
@@ -64,7 +64,7 @@ class MathClass(object):
         """!
         @brief Calculates the horizontal pixel density of one projector. (Should be the same for both projectors.) 
 
-        @details Horizontal pixels per centimeter of the screen \f(= resX / w\f). 
+        @details Horizontal pixels per centimeter of the screen (= resX / w). 
 
         @param resX [int], The horizontal resolution of one projector, in pixels.
         @param w [double], Width of the image projected from one projector, in cm.
