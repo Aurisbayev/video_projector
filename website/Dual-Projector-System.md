@@ -29,7 +29,9 @@ If both projectors displayed the overlap at full brightness, the shared area wou
 
 The left projector's mask fades from full brightness (1) to zero (0) across the overlap. The right projector's mask fades in the opposite direction, from zero (0) to full brightness (1). Outside the overlap, each projector displays its own area at full brightness.
 
-The two fades are complementary when the blend gamma is 1.0, so their brightness contributions add to the intended level across the overlap. The `blendCurveGamma` setting changes the shape of the fade. It should be adjusted only after the projectors are physically aligned and the measurements are correct.
+In our testing, the two fades are complementary when the blend gamma is set to 2.0, producing an even join across the overlap on the real projectors. A gamma of 1.0 leaves a dark line in the middle because projector brightness is not directly proportional to pixel value. 
+
+The blendCurveGamma setting adjusts the shape of the fade and should be tuned only after the projectors are physically aligned and the measurements are correct.
 
 ## What the software does on each computer
 

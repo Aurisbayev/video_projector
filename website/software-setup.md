@@ -64,8 +64,8 @@ Edit the settings on both computers so that the geometry, source path, blend set
 | JSON key | Purpose |
 |---|---|
 | `projectorResXY` | Projector's native resolution as `[width, height]` in pixels. |
-| `imageWidthCm` | Width `w` covered by one projected image, in cm. |
-| `projectorSpacingCm` | Distance `d` between the projectors, in cm. |
+| `imageWidthCm` | Width `w` covered by one projected image, in centimetres. |
+| `projectorSpacingCm` | Distance `d` between the projected-image centres, in centimetres. |
 | `blendCurveGamma` | Controls the shape of the brightness fade in the overlap. |
 | `sourcePath` | Path to the picture or video to display. |
 | `projectorSide` | `LEFT` or `RIGHT`, identifying this computer's projector. |
@@ -144,35 +144,52 @@ The default video start delay is five seconds when a side is selected and no sta
 
 ## 5. Use the test GUI
 
-The GUI lets you try settings and preview the combined output on one computer without connecting projectors:
+The test GUI provides one place to edit the settings, inspect the joined output, and start the projection program. Run it on either computer:
 
 ```bash
-uv run python gui.py settings.json
+uv run python gui.py [settings.json]
 ```
 
-It can edit settings, show the joined left and right output, preview pictures and videos, compare blending on and off, and start the projection program.
+The settings file is optional. If supplied, the GUI loads it when it opens. The GUI can preview a picture or video without connecting the projectors; the preview is generated separately from the actual projector display.
 
-The GUI requires `tkinter`. Check whether the active Python can import it:
+![The test GUI showing settings and a joined preview](website-images/gui-window.png)
 
-```bash
-python -c "import tkinter"
-```
+### What the window shows
 
-If `tkinter` is missing, install the matching package for your Python distribution. For example:
+The left side contains the **Settings** and **Preview** controls. The right side shows the preview. When a setting changes, the preview is updated. If a value is invalid, an error message appears and the last valid preview is kept.
 
-**Homebrew Python:**
+**Settings**
 
-```bash
-brew install python-tk@3.14
-```
+- **Picture or video**: selects the source file. Use **Browse…** to choose it.
+- **Projector resolution [px]**, **w** (width of one projector's picture, in cm), and **d** (distance between the projectors, in cm): the same geometry values used in `settings.json`.
+- **Gamma (fade shape)**: adjusts the shape of the brightness fade across the overlap. The best value depends on the real projectors; on the projectors tested for this system, 2.0 produced an even join, while 1.0 left a dark line in the middle.
+- **Fit picture**: `crop` fills the combined image and cuts off excess edges; `fit` shows the whole source with black bars.
+- **Open settings…** and **Save settings…**: load settings from a JSON file or save the current values to one.
 
-**Debian or Ubuntu:**
+**Preview**
 
-```bash
-sudo apt install python3-tk
-```
+- Choose **Both joined**, **LEFT only**, or **RIGHT only** to select which output is shown.
+- **Blend on** applies the overlap fade. Turn it off to inspect the overlap without blending.
+- **Show overlap edges** marks where the overlap starts and ends.
+- **Like the wall** simulates projected light by applying the projector gamma (2.2 by default) to the pixel values before combining the projector outputs. This gives a more realistic preview of brightness; a dark or bright band in this mode may also be visible on the wall.
+- For a video, use **Pause** and the seek bar to pause playback or move to another position. The video loops.
+- **Save this picture…** saves the current preview as an image.
 
-The Python managed by `uv` normally includes `tkinter`, but a GUI can still fail if its Tcl/Tk files cannot be found. See the repository README for additional troubleshooting.
+**Running on the projector**
+
+- **This computer drives** selects `LEFT` or `RIGHT` for the projector connected to this computer.
+- **Video start at (HH:MM:SS)** sets the shared start time for both computers. **In 15 s** and **In 30 s** fill in a start time a short time in the future. Leave the field empty to start after a key press.
+- **Start on projector** launches `main.py` with the current settings for the selected side, in a separate window. **Stop** stops that projection process.
+
+### A typical workflow
+
+1. Open the GUI with the settings file you want to use.
+2. Enter the measured projector resolution, `w`, and `d`. Check that the source file is correct.
+3. Enable **Like the wall** and inspect the overlap. Adjust **Gamma (fade shape)** until the join looks even. A value of 2.0 worked on the projectors used during testing, but the correct value may differ with other projectors.
+4. Save the settings. Copy the settings file to the second computer and set its projector side to the opposite side. Keep the source, geometry, and blend settings the same on both computers.
+5. Set the same video start time on both computers, then press **Start on projector** on each. If the start-time field is empty, use a key press to start each process; the starts may not be perfectly synchronized.
+
+The GUI is intended for configuration and preview as well as launching the real projection. You can also run `main.py` directly as described in [Run the projection program](#3-run-the-projection-program).
 
 ## 6. Check the connected displays
 
