@@ -16,13 +16,13 @@ class VideoSource(object):
     @details 
 
     @par Class Attributes:
-    path [string] Path to the video file.
-    fps [double] Video frame rate in frames per second.
-    frameCount [int] Total number of frames in the video.
-    width [int] Frame width in pixels.
-    height [int] Frame height in pixels.
-    next [int] Index of the next frame position to read.
-    lastIndex [int] Index of the cached frame.
+    path [string] Path to the video file.\n
+    fps [double] Video frame rate in frames per second.\n
+    frameCount [int] Total number of frames in the video.\n
+    width [int] Frame width in pixels.\n
+    height [int] Frame height in pixels.\n
+    next [int] Index of the next frame position to read.\n
+    lastIndex [int] Index of the cached frame.\n
     lastFrame [ndarray] Cached video frame.
     """
 

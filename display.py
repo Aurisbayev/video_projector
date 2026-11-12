@@ -156,7 +156,7 @@ class Display(object):
         """!
         @brief Waits for a key press.
 
-        @param delayMS [int], The waiting time in milliseconds. If set to 0, waits indefinitely.
+        @param delayMs [int], The waiting time in milliseconds. If set to 0, waits indefinitely.
 
         @return The key code of the pressed key [int], or -1 if no key was pressed during the waiting time.
         """
@@ -315,7 +315,7 @@ def findProjectorScreens():
 
     @details The projector is the first non-primary monitor. 
     With one monitor, or if the monitors cannot be read, it uses the primary one.
-    @raisewarning Works only on macOS. On other systems, returns (None, 0)
+    @warning Works only on macOS. On other systems, returns (None, 0)
 
     @returns (screens, index), screens may be none.
 

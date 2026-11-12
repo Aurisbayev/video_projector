@@ -328,7 +328,7 @@ class SetupClass(object):
         """!
         @brief Replaces the projector side loaded from the settings file.
 
-        @param [Side] Side.LEFT or Side.RIGHT.
+        @param side [Side], Side.LEFT or Side.RIGHT.
 
         @return None.
 

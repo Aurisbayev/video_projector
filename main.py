@@ -40,7 +40,7 @@ def main(argv=None):
         A time in the wrong form is a usage error.
 
 
-    @param argy Command-line arguments. If None, argparse reads sys.argy.
+    @param argv Command-line arguments. If None, argparse reads sys.argv.
 
     @throws SystemExit argparse raises this for invalid command-line arguments.
     """

@@ -405,8 +405,6 @@ class PipelineClass(object):
 
         @param setup a loaded SetupClass
 
-        @returns Nothing
-
         @throws ValueError if setup is missing or isn't loaded.
         """
 

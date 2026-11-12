@@ -145,7 +145,7 @@ class MathClass(object):
         With gamma 1.0, the two sides add up to the full picture.
 
 
-        @param overlapPx, Width of the overlap, in pixels.
+        @param overlapPx [int], Width of the overlap, in pixels.
         @param resX [int], The horizontal resolution of one projector, in pixels.
         @param projectorSide: [Side] Identifies the projector controlled by this computer (Side.LEFT or Side.RIGHT).
         @param gamma [double], Value controlling the shape of the fade.

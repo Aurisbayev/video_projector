@@ -81,7 +81,7 @@ The example video settings refer to `test_images/demo.mp4`, which is generated l
 uv run python tools/make_test_video.py
 ```
 
-## 3. Run the projection program
+## 3. Run the projection program {#run_program}
 
 Run `main.py` on each computer, using the same settings file and the appropriate side:
 
@@ -189,7 +189,7 @@ The left side contains the **Settings** and **Preview** controls. The right side
 4. Save the settings. Copy the settings file to the second computer and set its projector side to the opposite side. Keep the source, geometry, and blend settings the same on both computers.
 5. Set the same video start time on both computers, then press **Start on projector** on each. If the start-time field is empty, use a key press to start each process; the starts may not be perfectly synchronized.
 
-The GUI is intended for configuration and preview as well as launching the real projection. You can also run `main.py` directly as described in [Run the projection program](#3-run-the-projection-program).
+The GUI is intended for configuration and preview as well as launching the real projection. You can also run `main.py` directly as described in @ref run_program "Run the projection program"
 
 ## 6. Check the connected displays
 
