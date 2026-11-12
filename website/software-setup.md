@@ -1,26 +1,40 @@
-# Software usage {#software_usage}
+# Software setup and usage {#software_usage}
 
-Once the projectors are in place (see @ref hardware_setup "Hardware setup"),
-install the program on both computers, one for each projector. It needs Python 3.14,
-`numpy` and `opencv-python`. `pytest` is only for development.
+Install the project on both computers, one computer for each projector. Both installations should use the same project version, source file, and projection settings. The only setting that should differ is the projector side (`LEFT` or `RIGHT`).
 
-## Install
+The project requires **Python 3.14 or later**, NumPy, and OpenCV. The test suite uses `pytest`. The recommended installer is [uv](https://docs.astral.sh/uv/), which can download the Python version specified by the project and install the locked dependencies.
 
-We use [uv](https://docs.astral.sh/uv/) because it fetches the right Python
-version by itself.
+## 1. Install the software
+
+Install `uv` first.
+
+**macOS and Linux:**
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Clone the repository and install its dependencies:
+
+```bash
 git clone https://github.com/maksym-syd/video_projector.git
 cd video_projector
 uv sync
 ```
 
-That first line is for macOS and Linux. On Windows run
-`powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-instead. `uv sync` creates `.venv/` and installs the versions in `uv.lock`.
+`uv sync` creates a local `.venv` environment and installs the dependencies recorded in `uv.lock`. The project configuration specifies Python 3.14 or later.
 
-If uv is not an option, make a Python 3.14 virtual environment and use pip:
+### Alternative: install with pip
+
+If you do not want to use `uv`, install Python 3.14 or later, create a virtual environment, activate it, and install the project requirements.
+
+**macOS and Linux:**
 
 ```bash
 python3.14 -m venv .venv
@@ -28,126 +42,159 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-On Windows, activate it with `.venv\Scripts\Activate.ps1`.
+**Windows (PowerShell):**
 
-## Settings
+```powershell
+py -3.14 -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
 
-`SetupClass` reads the settings from a JSON file and rejects values that do
-not make sense. `settings.json` is an example for a picture and
-`settings.video.json` an example for a video.
+The commands below use `uv run`. If you installed with pip, activate `.venv` first and replace `uv run python` with `python`.
 
-| Setting | Key | Value |
-|---------|-----|-------|
-| Projector resolution | `projectorResXY` | native resolution of the projectors, `[width, height]` |
-| Image width | `imageWidthCm` | `w` from the hardware setup |
-| Projector spacing | `projectorSpacingCm` | `d` from the hardware setup |
-| Blending gamma | `blendCurveGamma` | how fast the brightness fades in the overlap |
-| Source path | `sourcePath` | picture or video to project |
-| Side | `projectorSide` | `LEFT` or `RIGHT` |
-| Scale mode (optional) | `scaleMode` | `crop` (default) fills the combined image and cuts the edges, `fit` shows the whole picture with black bars |
+## 2. Configure the project
 
-The file extension of `sourcePath` decides between picture and video. Video
-extensions are `.mp4`, `.m4v`, `.mov`, `.avi`, `.mkv` and `.webm`. A relative
-path is taken from the folder of the settings file.
+The program reads its configuration from a JSON file. The repository includes:
 
-The test video that `settings.video.json` uses is not in Git. Make it with
-`uv run python tools/make_test_video.py`.
+- `settings.json` — example configuration for a picture.
+- `settings.video.json` — example configuration for a video.
 
-## Run
+Edit the settings on both computers so that the geometry, source path, blend setting, and scaling mode match. Set `projectorSide` to `LEFT` on the computer connected to the left projector and `RIGHT` on the other computer.
 
-Start `main.py` on each computer and give each its own side. `--side` and
-`--scale-mode` override the settings file.
+| JSON key | Purpose |
+|---|---|
+| `projectorResXY` | Projector's native resolution as `[width, height]` in pixels. |
+| `imageWidthCm` | Width `w` covered by one projected image, in cm. |
+| `projectorSpacingCm` | Distance `d` between the projectors, in cm. |
+| `blendCurveGamma` | Controls the shape of the brightness fade in the overlap. |
+| `sourcePath` | Path to the picture or video to display. |
+| `projectorSide` | `LEFT` or `RIGHT`, identifying this computer's projector. |
+| `scaleMode` | Optional. `crop` fills the combined image and cuts off excess edges; `fit` shows the whole source with black bars. Defaults to `crop`. |
+
+A relative `sourcePath` is resolved from the directory containing the settings file. Both computers must be able to read the source at the configured path.
+
+Supported video extensions are `.mp4`, `.m4v`, `.mov`, `.avi`, `.mkv`, and `.webm`. Actual playback also depends on the codec being supported by the installed OpenCV build. Video playback has no audio.
+
+The example video settings refer to `test_images/demo.mp4`, which is generated locally and is not included in the repository. From the repository root, create it with:
+
+```bash
+uv run python tools/make_test_video.py
+```
+
+## 3. Run the projection program
+
+Run `main.py` on each computer, using the same settings file and the appropriate side:
 
 ```bash
 uv run python main.py settings.json --side LEFT
 uv run python main.py settings.json --side RIGHT
 ```
 
-## Video
+The `--side` option overrides `projectorSide` in the JSON file. The optional `--scale-mode crop` or `--scale-mode fit` option overrides `scaleMode`.
 
-A video shows its first frame, then starts when you press any key or at a
-shared start time. It loops at the end and stops when you press `q` or `ESC`.
-Video has no sound. If a file will not open, OpenCV does not support the
-codec: re-encode it as H.264 `.mp4`.
+For a video, the first frame is displayed before playback starts. Press any key to start, then press `q` or `Esc` to stop. The video loops when it reaches the end.
 
-To start both computers together, give both the same time. The formats are
-`HH:MM`, `HH:MM:SS` and `YYYY-MM-DD HH:MM:SS`, in local time.
+### Synchronize video playback
+
+To schedule both computers to start at the same time, pass the same local time to each process using `--start-at`:
 
 ```bash
 uv run python main.py settings.video.json --side LEFT --start-at 14:30:05
 uv run python main.py settings.video.json --side RIGHT --start-at 14:30:05
 ```
 
-Each frame is chosen from the clock, so the two computers' clocks must be set
-right, for example with NTP. Without a start time they start only as closely
-as the two key presses.
+Accepted time formats are `HH:MM`, `HH:MM:SS`, `YYYY-MM-DD HH:MM`, and `YYYY-MM-DD HH:MM:SS`. Use local time and give both computers the same time and time zone.
 
-## Quick test on the projectors
+Each computer chooses the frame corresponding to the clock time. A computer that starts late can join at the appropriate frame rather than beginning from the first frame. For this to work, keep both computer clocks synchronized, for example by enabling automatic time synchronization. Without `--start-at`, the computers begin after separate key presses, so a small timing difference is expected.
 
-`instant_run.py` shows the test video with one short command. Both laptops
-need the repository and the environment installed (see Install).
+`--start-at` is ignored for a picture source.
 
-On the first laptop, choose the side and a start time far enough ahead to
-reach the second laptop. Without `--start-in` the video starts in 5 seconds.
+## 4. Quick test with `instant_run.py`
+
+`instant_run.py` is a launcher for the test video or picture. Run it from the repository root on both computers.
+
+On the first computer, start the left projector and schedule the video to begin in 30 seconds:
 
 ```bash
 uv run python instant_run.py --left --start-in 30
 ```
 
-It prints the start time and the exact command for the second laptop, for
-example:
+The command prints the start time and a command for the second computer. Run the printed command on the second computer from its repository folder. The second computer should use the opposite side. Both computers need synchronized clocks and the same time zone.
+
+Useful options:
+
+- `--left` or `--right` — run the real projection program for that side.
+- `--video` — use `settings.video.json` (the default).
+- `--image` — use `settings.json`; a picture does not use a start time.
+- `--start-in SECONDS` — schedule a start a number of seconds in the future.
+- `--start-at TIME` — use an explicitly specified shared local time.
+- No side option — open a joined preview on the current computer.
+- `--gui` — open the test GUI. It cannot be combined with a side or start-time option.
+
+Examples:
 
 ```bash
-uv run python instant_run.py --right --start-at '2026-11-07 14:30:35'
+uv run python instant_run.py --left
+uv run python instant_run.py --right
+uv run python instant_run.py --image
+uv run python instant_run.py --gui
 ```
 
-Run that command in the repository folder on the second laptop. Both videos
-start by themselves at that time, with no key press. A laptop that starts
-late joins at the right frame. Both laptops need the same clock and time
-zone, set to automatic time.
+The default video start delay is five seconds when a side is selected and no start option is supplied.
 
-Add `--image` to show the picture from `settings.json` instead. A picture
-has no start time. Without `--left` or `--right` the command shows a preview
-on this computer, and `--gui` opens the test window. If the test video is
-missing, it is made first.
+## 5. Use the test GUI
 
-## Test window
-
-`gui.py` tries settings on one computer without projectors. It previews both
-sides joined, plays videos, and can start `main.py` on a projector.
+The GUI lets you try settings and preview the combined output on one computer without connecting projectors:
 
 ```bash
 uv run python gui.py settings.json
 ```
 
-It needs `tkinter`. Check it with `python -c "import tkinter"`. If that fails,
-run `brew install python-tk@3.14` for Homebrew Python, or
-`sudo apt install python3-tk` on Debian or Ubuntu.
+It can edit settings, show the joined left and right output, preview pictures and videos, compare blending on and off, and start the projection program.
 
-The Python that uv downloads itself (`--managed-python`) includes `tkinter`,
-but in a virtual environment the window can still fail with
-`Can't find a usable init.tcl`. The README explains how to fix this.
+The GUI requires `tkinter`. Check whether the active Python can import it:
 
-## Check the displays first
+```bash
+python -c "import tkinter"
+```
 
-Before running the pipeline, make sure each projector shows up as its own
-screen. `display.py` ends with a smoke test for this. It draws a test
-picture, saves it as `images/sample.jpg`, loads it back and shows it
-full-screen.
+If `tkinter` is missing, install the matching package for your Python distribution. For example:
+
+**Homebrew Python:**
+
+```bash
+brew install python-tk@3.14
+```
+
+**Debian or Ubuntu:**
+
+```bash
+sudo apt install python3-tk
+```
+
+The Python managed by `uv` normally includes `tkinter`, but a GUI can still fail if its Tcl/Tk files cannot be found. See the repository README for additional troubleshooting.
+
+## 6. Check the connected displays
+
+Before running the projection pipeline, confirm that the operating system detects each projector as a separate display. The `display.py` smoke test opens a test image on a selected display:
 
 ```bash
 uv run python display.py
 ```
 
-Press `q` or `ESC` to close it. It also closes on its own after 30 seconds.
-To pick the screen, edit the `screens` list in the smoke test. Each entry is
-`(x, y, width, height)` in logical pixels, and the picture appears on index
-0.
+Press `q` or `Esc` to close the test. It also closes automatically after 30 seconds. The display rectangles are configured in the smoke-test section of `display.py`; each rectangle is `(x, y, width, height)` in logical pixels.
 
-Tests run with `uv run pytest`.
+## 7. Run the tests
 
-@note Most modules are generated from a UML model. Keep the `# ˅` and `# ˄`
-markers and write your code between them, otherwise it is overwritten the
-next time the code is generated.
+Install the development dependencies and run the test suite:
 
-Back to the @ref index "main page".
+```bash
+uv sync --group dev
+uv run pytest
+```
+
+The tests check the geometry calculations, settings validation, image processing, video handling, display behaviour, and pipeline components.
+
+@note Some modules are generated from a UML model. Keep the `# ˅` and `# ˄` markers and make changes only in the designated code sections; edits outside those markers may be overwritten when the code is generated.
+
+Back to the @ref mainpage "main page".

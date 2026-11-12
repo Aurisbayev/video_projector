@@ -1,90 +1,50 @@
+# Downloads and project resources {#downloads}
 
-# Dual-Projector Projection System {#downloads}
+This page links to the project source, generated API documentation, and the tools used to build that documentation.
 
-Welcome to the download page for the **Dual-Projector Projection System**.
+## Project source code
 
-This page provides access to the project documentation, source code,
-and the tools required to generate and view the documentation.
+The source repository contains the Python application, example settings, test images, test suite, and documentation source files.
 
----
+- [Browse the GitHub repository](https://github.com/maksym-syd/video_projector)
+- [Download the main branch as a ZIP archive](https://github.com/maksym-syd/video_projector/archive/refs/heads/main.zip)
 
-## Doxygen Documentation
+To run the application, download or clone the repository and follow @ref software_usage "Software setup and usage". The generated test video is not included in the repository; create it locally using `tools/make_test_video.py`.
 
-The Doxygen documentation provides detailed information about the
-system architecture, class relationships, and implementation.
+## Generated Doxygen documentation
 
-Use the documentation to understand how the projection geometry,
-image regions, and blending masks work together.
+The HTML documentation describes the system design, classes, methods, and source files.
 
-[**Open Doxygen Documentation**](@ref index)
+- [Open the Doxygen API documentation](@ref mainpage)
 
----
+The HTML pages are generated from the documentation comments and Markdown files in the repository. The generated website output is not stored in the source repository (You can find it in ./website).
 
-## GitHub Repository
+## Doxygen
 
-The GitHub repository contains the source code and project files
-used to implement the Dual-Projector Projection System.
+[Doxygen](https://www.doxygen.nl/) extracts documentation from source code comments and Markdown files. It can generate HTML documentation and other output formats.
 
-You can browse the source code, review the implementation, and
-download the project files for local use.
+- [Download Doxygen](https://www.doxygen.nl/download.html)
+- [Doxygen installation instructions](https://www.doxygen.nl/manual/install.html)
+- [Doxygen project website](https://www.doxygen.nl/)
 
-[**Open GitHub Repository**](https://github.com/maksym-syd/video_projector)
+Choose the package for your operating system and processor architecture. After installing Doxygen, open the project's `Doxyfile` in the Doxygen GUI and run **Run doxygen**, or run the following command from the repository root:
 
-[**Download Project Files (.zip)**](https://github.com/maksym-syd/video_projector/archive/refs/heads/main.zip)
+```bash
+doxygen Doxyfile
+```
 
----
+The generated HTML site is written to `website/html/`. Open `website/html/index.html` in a web browser.
 
-## Download Doxygen
+## Main project components
 
-Doxygen is a documentation generation tool that extracts information
-from source code and generates structured documentation in HTML
-and other formats.
+| Component | Responsibility |
+|---|---|
+| `PipelineClass` | Coordinates the picture and video processing pipeline. |
+| `SetupClass` | Loads and validates the projection settings. |
+| `MathClass` | Calculates projection dimensions, overlap pixels, image regions, and blending masks. |
+| `VideoSource` | Opens a video and provides frames and playback timing. |
+| `Region` | Describes a horizontal image region by its starting x-coordinate and width. |
+| `Mask` | Stores the brightness multipliers used in the overlap. |
+| `Side` | Identifies the `LEFT` and `RIGHT` projector sides. |
 
-To generate or update the documentation locally, download Doxygen
-for your operating system from the official website.
-
-[**Download Doxygen**](https://www.doxygen.nl/download.html)
-
-Available downloads include installers or packages for Windows,
-macOS, and Linux.
-
----
-
-## Installing Doxygen
-
-Follow the instruction page in the link below to install Doxygen and prepare your
-environment for generating project documentation.
-
-Open the official download page and select the package
-appropriate for your operating system and processor.
-
-[Doxygen Installation Guide](https://www.doxygen.nl/manual/install.html).
-
-## Additional Resources
-
-- [Official Doxygen Website](https://www.doxygen.nl/)
-- [Doxygen Download Page](https://www.doxygen.nl/download.html)
-- [Doxygen Installation Guide](https://www.doxygen.nl/manual/install.html)
-- [Official Doxygen GitHub Repository](https://github.com/doxygen/doxygen)
-
----
-
-## Project Classes
-
-The documentation covers the main components of the
-Dual-Projector Projection System.
-
-- **PipelineClass:** Coordinates the pipeline for pictures and videos.
-- **SetupClass:** Loads and validates projector and system settings.
-- **MathClass:** Calculates projection geometry, overlap pixels,
-  image regions, and blending masks.
-- **VideoSource:** Reads a video file one frame at a time.
-- **Region:** Represents a horizontal image region using its
-  starting pixel and width.
-- **Mask:** Stores brightness multipliers for blending.
-- **Side:** Identifies the left or right projector.
-
-For more details about each class and its methods, visit the
-[Doxygen Documentation](@ref index).
-
----
+For installation, configuration, and run instructions, see @ref software_usage "Software setup and usage". For the physical projector arrangement, see @ref hardware_setup "Hardware setup".

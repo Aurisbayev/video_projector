@@ -1,154 +1,98 @@
 # Dual-Projector Projection System {#mainpage}
 
-Welcome to the documentation for the **Dual-Projector Projection
-System**.
+The **Dual-Projector Projection System** uses two computers and two projectors to show one continuous picture or video across a screen. Each computer renders one side of the same combined image. The projected images overlap in the centre, where brightness masks reduce the contribution from each projector to create a smoother join.
 
-This project coordinates two projectors to display a combined picture
-or video across a screen. Each projector is driven by its own computer.
-The projected regions overlap, and a blending mask adjusts brightness in
-that overlap to make the combined image appear more continuous.
+This documentation covers the physical arrangement, software installation, configuration, operation, and the Python API.
 
-## System overview
+## How the system works
 
-The system uses the projector configuration, screen geometry, and
-selected projector side to determine which part of the combined image
-each projector displays. A blending mask controls the brightness of
-pixels in the overlap region.
+1. Both computers load the same source picture or video and compatible projection settings.
+2. The software scales the source to the dimensions of the combined projection.
+3. Each computer selects the horizontal region assigned to its projector.
+4. A blending mask adjusts the brightness across the overlap.
+5. Each computer displays its own region full-screen on its connected projector.
 
-Key terms:
+The computers must use matching geometry and source settings. Their `projectorSide` values must differ: one computer is `LEFT`, and the other is `RIGHT`.
 
--   **Projection width (`w`)**: width, in centimetres, covered by one
-    projector on the screen.
--   **Projector spacing (`d`)**: distance, in centimetres, between the
-    two projectors.
--   **Overlap**: screen region illuminated by both projectors.
--   **`overlapPx`**: overlap width expressed as a whole number of
-    pixels.
--   **Region**: the horizontal part of the combined image assigned to
-    one projector.
--   **Mask**: a list of brightness multipliers from `0` (black) to `1`
-    (full brightness).
--   **Gamma (`gamma`)**: parameter that shapes the brightness fade
-    across the overlap.
--   **Frame**: one picture of a video.
--   **Frame rate (`fps`)**: number of video frames per second [frames
-    per second].
--   **Frame number**: position of a frame in the video, counted from
-    `0`.
--   **Shared start time**: the moment both computers start a video,
-    given as the same clock time on both.
--   **Crop / fit**: the two `scaleMode` values: fill and cut the edges /
-    show everything with black bars.
--   **Slice**: the picture cut out of the combined image for this
-    computer's projector, `resX` wide [px].
--   **Projector gamma**: how strongly a projector's light grows with the
-    pixel value, about `2.2`. Not the same as gamma in the settings,
-    which shapes the fade.
+## Key terms
 
-## UML class diagram
+| Term | Meaning |
+|---|---|
+| `w` | Width in centimetres covered by one projector on the screen. |
+| `d` | Distance in centimetres between the two projector image centres, as used by the geometry model. |
+| Overlap | Screen area illuminated by both projectors; its width is `w - d`. |
+| `overlapPx` | Overlap width in pixels in the combined image. |
+| `Region` | A horizontal image slice, described by its starting x-coordinate and width. |
+| `Mask` | Per-column brightness multipliers, from `0` (black) to `1` (full brightness). |
+| Blend `gamma` | The setting that shapes the brightness fade through the overlap. |
+| Frame | One image in a video. |
+| `fps` | Video frame rate, in frames per second. |
+| Shared start time | A local clock time at which both computers are scheduled to begin video playback. |
+| `crop` / `fit` | The two source-image scaling modes: fill the combined image and crop excess, or show the whole image with black bars. |
 
-The diagram below shows the main classes, their relationships, and the
-methods documented in this project. The module functions
-(`parseStartTime`, `findProjectorScreens`, `screenRects`), `main.py`,
-the test window and the tools are not on the diagram.
+The `blendCurveGamma` setting is not the same as a projector's physical gamma response.
 
-<a href="MainDiagram.png"><img src="MainDiagram.png" width="100%" alt="UML Class Diagram"></a>
+## Projector geometry
 
-## Projector geometry and blending
+The two projectors are positioned side by side. Each covers a width `w`; the distance between the two projectors is `d`. The geometry calculations use these measurements and the projector resolution to determine the overlap in pixels and the region shown by each side.
 
-This digital illustration summarizes the two-projector arrangement, the
-overlap on the screen, the opposing brightness fades, and how the
-combined image is divided into left, overlap, and right regions.
+The illustration below shows the combined image and its left, overlap, and right portions.
 
-<img src="./website/website-images/combined-image-example.svg" width="500" alt="Projector Geometry">
+\image html combined-image-example.svg "Combined image and overlap geometry" width=700px
+
+For the physical arrangement and measurement procedure, see @ref hardware_setup "Hardware setup".
 
 ## Main classes
 
--   **`PipelineClass`** coordinates the pipeline for pictures and
-    videos.
--   **`SetupClass`** loads and validates settings such as projector
-    resolution, image width, projector spacing, blending gamma, source
-    path, projector side, and scale mode (`crop` or `fit`).
--   **`MathClass`** calculates overlap width, total projection width,
-    pixel density, overlap pixels, image regions, and blending masks.
--   **`VideoSource`** reads a video file one frame at a time.
--   **`Region`** represents a horizontal region using its starting pixel
-    and width.
--   **`Mask`** stores per-column brightness multipliers.
--   **`Side`** identifies the left (`LEFT = 1`) or right (`RIGHT = 2`)
-    projector.
+- **`PipelineClass`** coordinates the processing and display pipeline for pictures and videos.
+- **`SetupClass`** loads and validates the JSON settings, including resolution, screen measurements, blend gamma, source path, projector side, and scaling mode.
+- **`MathClass`** calculates projection geometry, overlap width in pixels, image regions, and blending masks.
+- **`VideoSource`** reads video frames and provides timing information for playback.
+- **`Region`** represents a horizontal slice of an image using its x-coordinate and width.
+- **`Mask`** stores brightness multipliers used during blending.
+- **`Side`** identifies the left (`LEFT`) or right (`RIGHT`) projector.
 
-## Video
+The UML class diagram shows the principal classes and their relationships. Module-level functions, command-line entry points, test utilities, and some supporting modules are not represented.
 
-The setting `sourcePath` can be a picture or a video. The file extension
-decides which one it is.
+<a href="MainDiagram.png"><img src="MainDiagram.png" width="100%" alt="UML class diagram"></a>
 
-A video is played frame by frame. Each computer picks the frame from the
-clock, so a slow computer skips frames and does not fall behind.
+## Pictures and videos
 
-A video starts on a key press, or at a shared start time that both
-computers get with the option `--start-at`. It loops at the end and
-stops with `q` or `Esc`. There is no sound.
+The `sourcePath` setting selects the source file. The file extension determines whether the program treats it as a picture or a video.
 
-If a video file does not open, re-encode it as H.264 `.mp4`.
+For pictures, `scaleMode` controls how the source is fitted to the combined image:
 
-## Picture proportions
+- **`crop`** (default): fills the combined image and cuts off the excess at the edges. The picture is not stretched.
+- **`fit`**: shows the complete picture and adds black bars where needed. The picture is not stretched.
 
-The setting `scaleMode` says how the source is fitted to the combined
-image. Neither mode stretches the picture.
+For videos, each computer selects frames using the playback clock rather than simply advancing one frame after another. If a computer is slow, it can skip a frame instead of falling progressively behind. Playback loops when the video ends and has no audio.
 
--   **`crop`** (default) fills the combined image. It cuts the edges and
-    keeps the centre.
--   **`fit`** shows the whole picture in the centre with black bars.
+A video can start after a key press or at a shared local time supplied with `--start-at`. For synchronized playback, both computers need the same start time, clock, and time zone. See @ref software_usage "Software usage".
 
-An example: the combined image is about 3.2 times as wide as it is high.
-A 16:9 video is about 1.8 times as wide as it is high. So `crop` loses
-about 45 percent of the height of the video, while `fit` shows
-everything with bars on the left and right.
+Press `q` or `Esc` to stop playback. If OpenCV cannot open a video, try re-encoding it as H.264 in an `.mp4` file.
 
-## Tools
+## Included tools
 
--   **`instant_run.py`** is one short command that starts the test video
-    or picture on the projectors, or as a preview.
--   **`gui.py`** is a test window to edit the settings, see both
-    projectors joined, compare with and without the blend, play a video,
-    and start the real show.
--   **`tools/preview_both.py`** shows a joined preview of pictures and
-    videos.
--   **`tools/make_test_video.py`** writes a test video with a sweeping
-    bar.
+- **`main.py`** runs the projection program for one computer and one projector side.
+- **`instant_run.py`** provides a short command for a projector run, a joined preview, or the test GUI.
+- **`gui.py`** provides a test window for editing settings, previewing both sides together, and starting the projection program.
+- **`tools/preview_both.py`** previews the joined output from both projector sides.
+- **`tools/make_test_video.py`** creates a test video with a moving bar for checking the image and overlap.
+- **`display.py`** contains the display handling and a small display smoke test.
 
-## Blend test on the real projectors
+## Blending and gamma
 
-Two Epson projectors showed the dice picture. With gamma `1.0` a faint
-dark line is visible in the middle, where the two projections overlap.
-With gamma `2.0` no line is visible.
+The blending mask controls the brightness contributed by each projector in the overlap. The `blendCurveGamma` setting changes the shape of the fade. It should be adjusted only after the projectors are positioned, aligned, and measured correctly.
 
-The reason is that a projector does not give light in proportion to the
-pixel value. The light follows about `pixel ^ 2.2`. With gamma `1.0` the
-two linear fades add up to less than full light in the middle of the
-overlap, so a dark band appears. With gamma `2.0` they add up to about
-full light.
+A projector's physical light output is not necessarily proportional to the pixel value. The preview tools provide a separate **Like the wall** view that approximates this response using a projector-gamma value. That preview calculation is for visual comparison; it is not the blending algorithm used by the projection pipeline. A value around `2.2` is a common approximation, not a measured property of the projectors used in testing.
 
-The preview tools reproduce this with the light view:
+Do not confuse:
 
--   For each pixel, `light = (value / 255) ^ G`.
--   The two lights are added.
--   The sum is limited to `1` and turned back with `^ (1 / G)`.
-
-This is done only in the overlap. It is a preview-only calculation and
-is not used when projecting. The value `2.2` is typical. It was not
-measured for these projectors.
-
-Do not mix up the two gammas:
-
--   **`gamma` / `blendCurveGamma`** is a setting that shapes the fade.
-    Its range of `0.5` to `3.0` is not final yet.
--   **Projector gamma** (`--projector-gamma`, "Like the wall") is a
-    property of the projector.
+- **Blend gamma** (`blendCurveGamma`): shapes the overlap fade in the application.
+- **Projector gamma** (`--projector-gamma` in the preview tool): approximates how pixel values translate into projected light in the preview.
 
 ## Documentation navigation
 
-Use the class list and file list generated by Doxygen to browse the API
-documentation. Start with `MathClass` for geometry and mask
-calculations, or `SetupClass` for configuration loading and validation.
+Use the Doxygen class and file lists to explore the API. Start with `MathClass` for projection calculations, `SetupClass` for settings and validation, or `PipelineClass` for the processing sequence.
+
+For installation and command examples, continue to @ref software_usage "Software usage". For the physical setup, see @ref hardware_setup "Hardware setup". Downloads and project links are on @ref downloads "Downloads".
